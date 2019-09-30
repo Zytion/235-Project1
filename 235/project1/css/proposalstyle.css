@@ -1,0 +1,55 @@
+header {
+    grid-area: navBar;
+    background-color: #2e3532;
+}
+
+#navbar {
+    display: flex;
+    color: #e0e2db;
+    margin: 0;
+    padding: 0 0 0 1em;
+    justify-content: flex-end;
+    align-items: center;
+}
+#navbar > a {
+    padding: 1em;
+    color: inherit;
+    font: inherit;
+    text-decoration: inherit;
+}
+#home {
+    margin-right: auto;
+}
+
+#navbar > a:hover {
+    background-color: #404945;
+}
+
+#active {
+    background-color: green;
+}
+
+h2 {
+    border-top: 0.1em solid black;
+    padding: 0.5em;
+}
+
+body {
+    margin: 0;
+}
+
+h1 {
+    text-align: center;
+}
+p {
+    margin-left: 1em;
+}
+
+#content {
+    display: flex;
+    flex-flow: column nowrap;
+    margin: 0 20vw;
+}
+ul {
+    list-style-type: none;
+}
