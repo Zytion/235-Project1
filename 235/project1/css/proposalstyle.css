@@ -1,11 +1,11 @@
 header {
     grid-area: navBar;
-    background-color: #8C7A6A;
+    background-color: #7f6000;
 }
 
 #navbar {
     display: flex;
-    color: #C6BB9B;
+    color: black;
     margin: 0;
     padding: 0 0 0 1em;
     justify-content: flex-end;
@@ -22,11 +22,11 @@ header {
 }
 
 #navbar > a:hover {
-    background-color: #BFAC69;
+    background-color: #463500;
 }
 
 #active {
-    background-color: rgb(87, 78, 48);
+    background-color: #f1c232;
 }
 
 h2 {
@@ -40,8 +40,7 @@ h3 {
 
 body {
     margin: 0;
-    color: #C6BB9B;
-    background-color: #020202;
+    background-color: #e3cd8c;
 }
 
 h1 {
@@ -55,7 +54,7 @@ p {
     display: flex;
     flex-flow: column nowrap;
     margin: 0 20vw;
-    background-color: #4C2B1F;
+    background-color: #fce5cd;
 }
 ul {
     list-style-type: none;
