@@ -32,15 +32,18 @@ header {
 h2 {
     border-top: 0.1em solid #C6BB9B;
     padding: 0.5em;
+    margin: 1em 0 0 0;
 }
 
 h3 {
     padding: 0.5em;
+    margin: 0;
 }
 
 body {
     margin: 0;
-    background-color: #e3cd8c;
+    /* background-color: #e3cd8c; */
+    background-image: url(../Images/Vintage_Paper_Texture_\(9789792113\).jpg);
 }
 
 h1 {
@@ -53,9 +56,25 @@ p {
 #content {
     display: flex;
     flex-flow: column nowrap;
-    margin: 0 20vw;
+    margin: 0 10vw;
     background-color: #fce5cd;
 }
 ul {
     list-style-type: none;
+}
+#screenshots {
+    display: flex;
+    flex: 0 1 100px;
+    flex-flow: row wrap;
+    justify-content: space-around;
+}
+#screenshots > img {
+    width: 45%;
+    margin: 0.5em 0;
+}
+
+@media only screen and (max-width: 768px) {
+    #screenshots > img {
+        width: 90%;
+    }   
 }
