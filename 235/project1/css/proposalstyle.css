@@ -43,6 +43,7 @@ body {
     margin: 0;
     /* background-color: #e3cd8c; */
     background-image: url(../Images/Vintage_Paper_Texture_\(9789792113\).jpg);
+    min-height: 100vh;
 }
 
 h1 {
@@ -57,6 +58,7 @@ p {
     flex-flow: column nowrap;
     margin: 0 10vw;
     padding-bottom: 1em;
+    flex-grow : 1;
     background-color: #fce5cd;
 }
 ul {
