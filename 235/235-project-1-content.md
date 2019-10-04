@@ -38,7 +38,7 @@ Players will need to learn how to manage their time properly. They have to learn
 * Gathering Menu
 * Town Upgrades Menu
 
-## IX. About the developer(s)
+## VIII. About the developer(s)
 **Name:** Bobby Levin
 
 **Major:** Game Design and Devlopment
