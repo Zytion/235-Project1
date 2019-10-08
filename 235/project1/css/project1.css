@@ -4,9 +4,10 @@ header {
 
 #navbar {
     display: flex;
-    color: #fce5cd;
+    color: #ffffff;
     margin: 0;
     padding: 0 0 0 1em;
+    flex-flow: row nowrap;
     justify-content: flex-end;
     align-items: center;
 }
@@ -24,8 +25,8 @@ header {
     background-color: #463500;
 }
 
-#active {
-    background-color: #f1c232;
+.active {
+    background-color: #664d00;
 }
 
 h2 {
@@ -43,6 +44,7 @@ body {
     margin: 0;
     /* background-color: #e3cd8c; */
     background-image: url(../Images/Vintage_Paper_Texture_\(9789792113\).jpg);
+    font: normal 1.2em "Lucida Sans Unicode";
     min-height: 100vh;
 }
 
@@ -79,5 +81,16 @@ ul {
 @media only screen and (max-width: 768px) {
     #screenshots > img {
         width: 90%;
+    }
+    #navbar {
+        flex-flow: column;
+        padding: 0 0 0 0.5em;
     }   
+    #home {
+        margin: 0;
+    }
+    #navbar > a {
+        width: 100%;
+        text-align: center;
+    }
 }
