@@ -1,7 +1,19 @@
+/* The back of the navagation bar */
 header {
     background-color: #7f6000;
 }
+/* Pages are broken up into sections */
+section {
+    margin: 1em;
+    padding: 1em;
+    background-color: #7f6000;
+    border-radius: 0 1em;
+}
 
+a {
+    color: inherit;   
+}
+/* The Navagation Bar */
 #navbar {
     display: flex;
     color: #ffffff;
@@ -11,30 +23,39 @@ header {
     justify-content: flex-end;
     align-items: center;
 }
-#navbar > a {
+/* The 3 nav links on the right (document, proposal, and project)*/
+#navbar > div {
+    display: flex;
+}
+/* The page links in the nav bar */
+#navbar > div > a, #home {
     padding: 1em;
     color: inherit;
     font: inherit;
     text-decoration: inherit;
 }
+/* The home link in the nav bar */
 #home {
     margin-right: auto;
 }
-
-#navbar > a:hover {
+/* Hovering on all navbar links  */
+a:hover#home, #navbar > div > a:hover {
     background-color: #463500;
 }
-
+/* Hightlight the nav item for the page we are currently on */
 .active {
     background-color: #664d00;
 }
-
+/* Section headers */
 h2 {
-    border-top: 0.1em solid #C6BB9B;
+    background-color: #d8c5b0;
+    color: #463500;
     padding: 0.5em;
-    margin: 1em 0 0 0;
+    margin: 0.5em;
+    text-align: center;
+    border-radius: 0.1em;
 }
-
+/* Section sub headings */
 h3 {
     padding: 0.5em;
     margin: 0;
@@ -44,52 +65,105 @@ body {
     margin: 0;
     /* background-color: #e3cd8c; */
     background-image: url(../Images/Vintage_Paper_Texture_\(9789792113\).jpg);
-    font: normal 1.2em "Lucida Sans Unicode";
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    font: normal 100% serif;
     min-height: 100vh;
 }
-
+/* Main Page Headers */
 h1 {
     text-align: center;
+    color: #463500;
 }
+/* Text blocks */
 p {
-    margin: 0 2em;
+    margin: 0 5vw;
 }
-
+/* Main element that contains all sections */
 #content {
     display: flex;
     flex-flow: column nowrap;
+    justify-content: space-around;
     margin: 0 10vw;
     padding-bottom: 1em;
+    color: #d8c5b0;
     flex-grow : 1;
     background-color: #fce5cd;
+    background-image: url(../Images/parchment.png);
 }
+/* Unorded lists */
 ul {
     list-style-type: none;
-    margin: 0;
+    margin: 0 5vw;
 }
+/* any unordered list item */
+ul > li {
+    padding: 0 0 0.5em 0;
+}
+/* Container for screenshots */
 #screenshots {
     display: flex;
     flex: 0 1 100px;
     flex-flow: row wrap;
     justify-content: space-around;
 }
+/* Screenshots inside the container */
 #screenshots > img {
     width: 45%;
     margin: 0.5em 0;
 }
-
+/* Header for proposal page */
+div#gameName {
+    background-image: url(../Images/maxresdefault.jpg); 
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    height: 20vw;
+}
+/* Container for game title over image */
+div#gameName > div {
+    width: 100%;
+    margin: 0;
+    padding: 1em 0;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 black;
+}
+/* Game title for proposal page */
+div#gameName > div > h1 {
+    background-color: #fce5cdce;
+    padding: 2%;
+    color: black;
+}
+/* Small screens (typically phones) */
 @media only screen and (max-width: 768px) {
+    /* Increase image size for screenshots */
     #screenshots > img {
         width: 90%;
     }
+    /* Make navagation a column */
     #navbar {
         flex-flow: column;
-        padding: 0 0 0 0.5em;
+        padding: 0;
     }   
+    /* Hide all navagation links that are not Home */
+    #navbar > div {
+        width: 100%;
+        font-size: 0.8em;
+        text-align: center;
+        display: none
+    }
+    /* If you hover over Navagation bar, show other pages */
+    #navbar:hover div {
+        display: flex;
+        flex-flow: column nowrap;
+    }
+    /* Make home fill the navagation bar */
     #home {
         margin: 0;
-    }
-    #navbar > a {
         width: 100%;
         text-align: center;
     }
