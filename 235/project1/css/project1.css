@@ -8,6 +8,8 @@ section {
     padding: 1em;
     background-color: #7f6000;
     border-radius: 0 1em;
+    width: 95%;
+    box-sizing: border-box;
 }
 
 a {
@@ -85,6 +87,7 @@ p {
     display: flex;
     flex-flow: column nowrap;
     justify-content: space-around;
+    align-items: center;
     margin: 0 10vw;
     padding-bottom: 1em;
     color: #d8c5b0;
@@ -92,6 +95,11 @@ p {
     background-color: #fce5cd;
     background-image: url(../Images/parchment.png);
 }
+canvas {
+    width: min-content;
+    margin: 1em;
+}
+
 /* Unorded lists */
 ul {
     list-style-type: none;
