@@ -27,20 +27,20 @@ function createLabelsAndButtons() {
 
     let resourceBox = makeRectangle(150, 180, 0xFCE5CD);
     let meatBox = makeRectangle(390, 360, 0xFCE5CD);
-    let noticeBox = makeRectangle(meatBox.width, 140, 0xFCE5CD);
-    let buildBox = makeRectangle(170, 300, 0xFCE5CD);
-    let popBox = makeRectangle(resourceBox.width, 220, 0xFCE5CD);
+    let noticeBox = makeRectangle(meatBox.width, 174, 0xFCE5CD);
+    let buildBox = makeRectangle(170, 200, 0xFCE5CD);
+    let popBox = makeRectangle(resourceBox.width, 250, 0xFCE5CD);
     let timeBox = makeRectangle(resourceBox.width, 70, 0xFCE5CD);
-    let upgradeBox = makeRectangle(buildBox.width, 400, 0xFCE5CD);
+    let upgradeBox = makeRectangle(buildBox.width, 334, 0xFCE5CD);
 
     const vB = 0.25 * (sceneWidth - (resourceBox.width + meatBox.width + buildBox.width));
     const horizontalOffset = 60;
-    const hB1 = ((0.25) * ((sceneHeight - horizontalOffset) - (resourceBox.height + popBox.height + timeBox.height)));
-
-    console.log(hB1);
+    const hB1 = ((0.25) * (sceneHeight - (resourceBox.height + popBox.height + timeBox.height)));
+    const hB3 = ((0.25) * (sceneHeight - (upgradeBox.height + buildBox.height)));
+    const hB2 = ((0.25) * (sceneHeight - (meatBox.height + noticeBox.height)));
 
     resourceBox.x = vB;
-    resourceBox.y = horizontalOffset + hB1;
+    resourceBox.y = hB1;
     stage.addChild(resourceBox);
 
     meatBox.y = resourceBox.y;
@@ -48,7 +48,7 @@ function createLabelsAndButtons() {
     stage.addChild(meatBox);
         
     noticeBox.x = meatBox.x;
-    noticeBox.y = meatBox.y + meatBox.height + 10;
+    noticeBox.y = meatBox.y + meatBox.height + hB2;
     stage.addChild(noticeBox);
 
     buildBox.y = resourceBox.y;
@@ -64,7 +64,7 @@ function createLabelsAndButtons() {
     stage.addChild(timeBox);
 
     upgradeBox.x = buildBox.x;
-    upgradeBox.y = buildBox.y + buildBox.height + 10;
+    upgradeBox.y = buildBox.y + buildBox.height + hB3;
     stage.addChild(upgradeBox);
 }
 
