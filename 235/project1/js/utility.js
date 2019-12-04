@@ -7,3 +7,12 @@ function makeRectangle(width=50,height=50,color=0xFF0000){
     rect.endFill();
 	return rect;
 }
+
+function createLabelRectangle(title="Title", rect)
+{
+	let label = new PIXI.Text("Resources");
+    label.style = boxStyle;
+    label.x = rect.x + (rect.width - label.width) / 2;
+	label.y = rect.y + 10;
+	return label;
+}

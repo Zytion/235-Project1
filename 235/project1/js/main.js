@@ -18,10 +18,10 @@ function setup() {
 
 function createLabelsAndButtons() {
     let boxStyle = new PIXI.TextStyle({
-        fill: 0xFCE5CD,
+        fill: 0x000000,
         fontSize: 24,
         stroke: 0x000000,
-        strokeThickness: 6
+        strokeThickness: 1
     });
 
 
@@ -42,6 +42,12 @@ function createLabelsAndButtons() {
     resourceBox.x = vB;
     resourceBox.y = hB1;
     stage.addChild(resourceBox);
+
+    let resourceTitle = new PIXI.Text("Resources");
+    resourceTitle.style = boxStyle;
+    resourceTitle.x = resourceBox.x + (resourceBox.width - resourceTitle.width) / 2;
+    resourceTitle.y = resourceBox.y + 10;
+    stage.addChild(resourceTitle);
 
     meatBox.y = resourceBox.y;
     meatBox.x = resourceBox.x + resourceBox.width + vB;
