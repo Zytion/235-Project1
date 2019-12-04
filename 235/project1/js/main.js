@@ -31,3 +31,20 @@ let pickaxes = 0;
 let hatchets = 0;
 let spears = 0;
 let upgradeNames = ["Stone", "Iron", "Steel", "Titanium", "Diamond"];
+
+function gameLoop() {
+    //PUT THIS IN THE TICKER LOOP
+    //update basic resources/time
+    UpdateResources();
+    UpdateTime();
+
+    //check for meat clicks
+
+    //check for clicks on build
+    
+    //check for clicks on upgrades
+    
+    //check for clicks on population
+
+    //generate notifications
+}
