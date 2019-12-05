@@ -1,12 +1,8 @@
-//resources
-let meat = 0;
-let meatPerSec = 0;
-let wood = 0;
-let woodPerSec = 0;
-let stone = 0;
-let stonePerSec = 0;
-let ore = 0;
-let orePerSec = 0;
+//set up resources
+let meat = new Resources("Meat");
+let wood = new Resources("Wood", 0, 0);
+let stone = new Resources("Stone", 0, 0);
+let ore = new Resources("Ore", 0, 0);
 
 //population
 let maxPopulation = 0;
@@ -30,7 +26,7 @@ let upgradeNames = ["Novice", "Junior", "Veteran", "Master", "Grandmaster"];
 let pickaxes = 0;
 let hatchets = 0;
 let spears = 0;
-let upgradeNames = ["Stone", "Iron", "Steel", "Titanium", "Diamond"];
+let toolUpgradeNames = ["Stone", "Iron", "Steel", "Titanium", "Diamond"];
 
 function gameLoop() {
     //PUT THIS IN THE TICKER LOOP
