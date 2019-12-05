@@ -1,0 +1,49 @@
+#game {
+    width: 800px;
+    height: 600px;
+    margin: 1em;
+    background-color: #e3cd8c;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: repeat(5, 1fr);
+}
+
+#game > * {
+    
+}
+
+#Resources{
+    background-color: blue;
+    grid-row: 1 / span 1;
+    grid-column: 1 / span 1;
+}
+#Population{
+    background-color: red;
+    grid-row: 2 / span 1;
+    grid-column: 1 / span 1;
+}
+#Time{
+    background-color: black;
+    grid-row: 3 / span 1;
+    grid-column: 1 / span 1;
+}
+#Meat{
+    background-color: orange;
+    grid-row: 1 / span 1;
+    grid-column: 2 / span 1;
+}
+#Notice{
+    background-color: green;
+    grid-row: 2 / span 1;
+    grid-column: 2 / span 1;
+}
+#Build{
+    background-color: white;
+    grid-row: 1 / span 1;
+    grid-column: 3 / span 1;
+}
+#Upgrade{
+    background-color: yellow;
+    grid-row: 2 / span 1;
+    grid-column: 3 / span 1;
+}
