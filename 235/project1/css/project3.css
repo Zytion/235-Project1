@@ -1,49 +1,60 @@
 #game {
     width: 800px;
-    height: 600px;
+    height: 500px;
     margin: 1em;
     background-color: #e3cd8c;
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
     grid-template-rows: repeat(5, 1fr);
+    justify-content: space-between;
 }
 
 #game > * {
-    
+    width: 90%;
+    background-color: #fce5cdff;
+    border: 3px solid black;
 }
 
 #Resources{
-    background-color: blue;
-    grid-row: 1 / span 1;
+    grid-row: 1 / span 2;
     grid-column: 1 / span 1;
+    height: 180px;
 }
 #Population{
-    background-color: red;
-    grid-row: 2 / span 1;
+    grid-row: 3 / span 2;
     grid-column: 1 / span 1;
+    height: 180px;
 }
 #Time{
-    background-color: black;
-    grid-row: 3 / span 1;
+    grid-row: 5 / span 1;
     grid-column: 1 / span 1;
+    height: 80px;
 }
 #Meat{
-    background-color: orange;
-    grid-row: 1 / span 1;
+    grid-row: 1 / span 3;
     grid-column: 2 / span 1;
+    height: 280px;
 }
 #Notice{
-    background-color: green;
-    grid-row: 2 / span 1;
+    grid-row: 4 / span 2;
     grid-column: 2 / span 1;
+    height: 180px;
 }
 #Build{
-    background-color: white;
-    grid-row: 1 / span 1;
+    grid-row: 1 / span 2;
     grid-column: 3 / span 1;
+    height: 180px;
 }
 #Upgrade{
-    background-color: yellow;
-    grid-row: 2 / span 1;
+    grid-row: 3 / span 3;
     grid-column: 3 / span 1;
+    height: 280px;
+}
+
+h2 {
+    background-color: transparent;
+    margin: 0;
+    padding: 5px;
+    color: black;
+    font-size: 30px;
 }
