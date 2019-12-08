@@ -55,7 +55,6 @@ class Structure {
         }
         localStorage.setItem(this.name, JSON.stringify(this));
     }
-
 }
 
 class Upgrade {

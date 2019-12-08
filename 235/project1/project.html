@@ -26,16 +26,16 @@
                 <h2>Resources</h2>
                 <div class="internalBox">
                     <div>
-                        Meat: <div class="resourceValue">5</div>
+                        Meat: <div class="resourceValue" data-type="meat">5</div>
                     </div>
                     <div>
-                        Wood: <div class="resourceValue">5</div>
+                        Wood: <div class="resourceValue" data-type="wood">5</div>
                     </div>
                     <div>
-                        Stone: <div class="resourceValue">5</div>
+                        Stone: <div class="resourceValue" data-type="stone">5</div>
                     </div>
                     <div>
-                        Ore: <div class="resourceValue">5</div>
+                        Ore: <div class="resourceValue" data-type="ore">5</div>
                     </div>
                 </div>
             </div>
@@ -56,16 +56,16 @@
                     </div>
                     <div>
                         <div>
-                            <button><i class="fa fa-arrow-up" aria-hidden="true"></i></button>
-                            <button><i class="fa fa-arrow-down" aria-hidden="true"></i></button>
+                            <button data-type="hunter"><i class="fa fa-arrow-up" aria-hidden="true"></i></button>
+                            <button data-type="hunter"><i class="fa fa-arrow-down" aria-hidden="true"></i></button>
                         </div>
                         <div>
-                            <button><i class="fa fa-arrow-up" aria-hidden="true"></i></button>
-                            <button><i class="fa fa-arrow-down" aria-hidden="true"></i></button>
+                            <button data-type="miner"><i class="fa fa-arrow-up" aria-hidden="true"></i></button>
+                            <button data-type="miner"><i class="fa fa-arrow-down" aria-hidden="true"></i></button>
                         </div>
                         <div>
-                            <button><i class="fa fa-arrow-up" aria-hidden="true"></i></button>
-                            <button><i class="fa fa-arrow-down" aria-hidden="true"></i></button>
+                            <button data-type="lumber"><i class="fa fa-arrow-up" aria-hidden="true"></i></button>
+                            <button data-type="lumber"><i class="fa fa-arrow-down" aria-hidden="true"></i></button>
                         </div>
                     </div>
 
@@ -80,7 +80,7 @@
 
             <div id="Meat">
                 <h2>Meat</h2>
-                <button>Meat</button>
+                <button id="meatButton">Meat</button>
             </div>
             <div id="Notice">
             </div>
@@ -88,21 +88,21 @@
             <div id="Build">
                 <h2>Build</h2>
                 <div class="internalBox">
-                    <button>House <div>10 Wood</div></button>
-                    <button>Mineshaft <div>20 Wood</div></button>
-                    <button>Lumberyard <div>30 Wood</div></button>
-                    <button>Lodge <div>50 Wood</div></button>
+                    <button class="buildButton" data-build="house">House <div data-build="house">10 Wood</div></button>
+                    <button class="buildButton" data-build="mine">Mineshaft <div data-build="mine">20 Wood</div></button>
+                    <button class="buildButton" data-build="lumber">Lumberyard <div data-build="lumber">30 Wood</div></button>
+                    <button class="buildButton" data-build="lodge">Lodge <div data-build="lodge">50 Wood</div></button>
                 </div>
             </div>
             <div id="Upgrade">
                 <h2>Upgrade</h2>
                 <div class="internalBox">
-                    <button>Hunter <div>10 Wood</div></button>
-                    <button>Recruiter <div>20 Wood</div></button>
-                    <button>Townmaster <div>30 Wood</div></button>
-                    <button>Pickaxe <div>50 Wood</div></button>
-                    <button>Hatchets <div>50 Wood</div></button>
-                    <button>Spears <div>50 Wood</div></button>
+                    <button class="upgradeButton" data-upgrade="hunter">Hunter <div>10 Wood</div></button>
+                    <button class="upgradeButton" data-upgrade="recruit">Recruiter <div>20 Wood</div></button>
+                    <button class="upgradeButton" data-upgrade="townmaster">Townmaster <div>30 Wood</div></button>
+                    <button class="upgradeButton" data-upgrade="pickaxe">Pickaxe <div>50 Wood</div></button>
+                    <button class="upgradeButton" data-upgrade="hatchet">Hatchets <div>50 Wood</div></button>
+                    <button class="upgradeButton" data-upgrade="spear">Spears <div>50 Wood</div></button>
                 </div>
             </div>
         </main>
