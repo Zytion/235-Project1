@@ -54,7 +54,7 @@ function gameSetUp() {
         time = new Time(0, 0);
         //set up buildings
         //resources in order is wood, stone, ore
-        houses = new Structure("House", [10, 0, 0]);
+        houses = new Structure("House", [10, 0, 0], 1);
         mineshafts = new Structure("Mineshaft", [30, 0, 0]);
         lumberyards = new Structure("Lumberyard", [30, 15, 5]);
         lodges = new Structure("Lodge", [30, 0, 15]);
@@ -93,6 +93,7 @@ function gameSetUp() {
         lumberyards = new Structure("Lumberyard", lumberyardStorage.resourceNeeded, lumberyardStorage.count);
         let lodgeStorage = JSON.parse(localStorage.getItem("Lodge"));
         lodges = new Structure("Lodges", lodgeStorage.resourceNeeded, lodgeStorage.count);
+        
         //population
         let hunterStorage = JSON.parse(localStorage.getItem("Hunter"));
         hunters = new Population("Hunter", hunterStorage.count);
