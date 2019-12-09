@@ -109,9 +109,9 @@ function gameSetUp() {
         u.addEventListener("click", upgradeClicked);
     }
 
-    // upgradeButtons[0].querySelector("div").innerHTML = GetResources(hunterUpgrades);
-    // upgradeButtons[1].querySelector("div").innerHTML = GetResources(recruiterUpgrades);
-    // upgradeButtons[2].querySelector("div").innerHTML = GetResources(townmasterUpgrades);
+    // upgradeButtons[0].querySelector("div").innerHTML = GetResources(hunters);
+    // upgradeButtons[1].querySelector("div").innerHTML = GetResources(recruiters);
+    // upgradeButtons[2].querySelector("div").innerHTML = GetResources(townmasters);
     // upgradeButtons[3].querySelector("div").innerHTML = GetResources(pickaxes);
     // upgradeButtons[4].querySelector("div").innerHTML = GetResources(hatchets);
     // upgradeButtons[5].querySelector("div").innerHTML = GetResources(spears);
@@ -228,18 +228,18 @@ let upgradeClicked = (e) => {
     let str = "";
     switch (e.target.dataset.upgrade) {
         case "hunter":
-            upgradeTool(hunterUpgrades);
-            str += GetResources(hunterUpgrades);
+            upgradeTool(hunters);
+            str += GetResources(hunters);
             i = 0;
             break;
         case "recruit":
-            upgradeTool(recruiterUpgrades);
-            str += GetResources(recruiterUpgrades);
+            upgradeTool(recruiters);
+            str += GetResources(recruiters);
             i = 1;
             break;
         case "townmaster":
-            upgradeTool(townmasterUpgrades);
-            str += GetResources(townmasterUpgrades);
+            upgradeTool(townmasters);
+            str += GetResources(townmasters);
             i = 2;
             break;
         case "pickaxe":
