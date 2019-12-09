@@ -109,12 +109,12 @@ function gameSetUp() {
         u.addEventListener("click", upgradeClicked);
     }
 
-    upgradeButtons[0].querySelector("div").innerHTML = GetResources(hunterUpgrades);
-    upgradeButtons[1].querySelector("div").innerHTML = GetResources(recruiterUpgrades);
-    upgradeButtons[2].querySelector("div").innerHTML = GetResources(townmasterUpgrades);
-    upgradeButtons[3].querySelector("div").innerHTML = GetResources(pickaxes);
-    upgradeButtons[4].querySelector("div").innerHTML = GetResources(hatchets);
-    upgradeButtons[5].querySelector("div").innerHTML = GetResources(spears);
+    // upgradeButtons[0].querySelector("div").innerHTML = GetResources(hunterUpgrades);
+    // upgradeButtons[1].querySelector("div").innerHTML = GetResources(recruiterUpgrades);
+    // upgradeButtons[2].querySelector("div").innerHTML = GetResources(townmasterUpgrades);
+    // upgradeButtons[3].querySelector("div").innerHTML = GetResources(pickaxes);
+    // upgradeButtons[4].querySelector("div").innerHTML = GetResources(hatchets);
+    // upgradeButtons[5].querySelector("div").innerHTML = GetResources(spears);
 
     // set ticks
     let tickerUpdating = setInterval(tickerLoop, 200);
@@ -289,6 +289,15 @@ function updateLabels() {
 
     let populationLabel = document.querySelector("h3");
     populationLabel.innerHTML = population + "/" + maxPopulation;
+
+    let timeStamp = document.querySelectorAll("h4");
+    timeStamp[0].innerHTML = "Day: " + Math.trunc(time.days);
+    timeStamp[1].innerHTML = "Time: " + Math.trunc(time.hours) + ":";
+    if(Math.trunc(time.minutes) < 10)
+        timeStamp[1].innerHTML += "0" + Math.trunc(time.minutes);
+    else
+        timeStamp[1].innerHTML += Math.trunc(time.minutes);
+
 }
 
 function changeJobs(e) {
