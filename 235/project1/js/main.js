@@ -80,6 +80,7 @@ function gameSetUp() {
         lodges = new Structure("Lodges", lodgeStorage.resourceNeeded, lodgeStorage.count);
     }
 
+    //remember to remove this later
     meat.resourcesPerTick = 0;
 
     document.querySelector('#meatButton').addEventListener('click', clickMeat);
