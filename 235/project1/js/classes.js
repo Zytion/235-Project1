@@ -86,14 +86,17 @@ class Population {
     constructor(name, count = 0) {
         this.name = name;
         this.count = count;
+        localStorage.setItem(this.name, JSON.stringify(this));
     }
 
     increase() {
         this.count++;
+        localStorage.setItem(this.name, JSON.strinfify(this));
     }
 
     decrease() {
         this.count--;
+        localStorage.setItem(this.name, JSON.stringify(this));
     }
 
 }

@@ -16,14 +16,14 @@ let mineshafts;
 let lumberyards;
 let lodges;
 //upgrades
-let hunterUpgrades = 0;
-let recruiterUpgrades = 0;
-let townmasterUpgrades = 0;
+let hunters;
+let recruiters;
+let townmasters;
 let upgradeNames = ["Novice", "Junior", "Veteran", "Master", "Grandmaster"];
 //tool upgrades
-let pickaxes = 0;
-let hatchets = 0;
-let spears = 0;
+let pickaxes;
+let hatchets;
+let spears;
 let toolUpgradeNames = ["Stone", "Iron", "Steel", "Titanium", "Diamond"];
 //list of sayings
 let sayings = ["Welcome to Meat Clicker", "Get started by clicking on the meat."]
@@ -54,6 +54,14 @@ function gameSetUp() {
         mineshafts = new Structure("Mineshaft", [30, 0, 0]);
         lumberyards = new Structure("Lumberyard", [30, 15, 5]);
         lodges = new Structure("Lodge", [30, 0, 15]);
+        //population
+        hunters = new Population("Hunter", 0);
+        recruiters = new Population("Recruiter", 0);
+        townmasters = new Population("Townmaster", 0);
+        //tools
+        pickaxes = new Upgrade("Pickaxe", [30, 50, 30], 0);
+        hatchets = new Upgrade("Hatchet", [30, 50, 30], 0);
+        spears = new Upgrade("Spear", [25, 10, 5], 0);
     }
     //if there is meat in the local storage, set up the game if it has any values
     else {
@@ -78,6 +86,9 @@ function gameSetUp() {
         lumberyards = new Structure("Lumberyard", lumberyardStorage.resourceNeeded, lumberyardStorage.count);
         let lodgeStorage = JSON.parse(localStorage.getItem("Lodge"));
         lodges = new Structure("Lodges", lodgeStorage.resourceNeeded, lodgeStorage.count);
+        //population
+        hunterStorage = JSON.parse(localStorage.getItem("Hunter"));
+        hunters = new Population("Hunter", hunterStorage.count);
     }
 
     //remember to remove this later
