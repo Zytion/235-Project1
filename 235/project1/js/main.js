@@ -7,12 +7,11 @@ let ore;
 let maxPopulation = 1;
 let workingPopulation = 0;
 let population = 1;
+localStorage.setItem("Population", population);
 let populationPerTick = 60000;
-
 let hunters;
 let miners;
 let lumberjacks;
-
 //day and time
 let time;
 //build
@@ -101,9 +100,9 @@ function gameSetUp() {
         let lodgeStorage = JSON.parse(localStorage.getItem("Lodge"));
         lodges = new Structure("Lodges", lodgeStorage.resourceNeeded, lodgeStorage.count);
         //population
+        population = localStorage.getItem("Population");
         let hunterStorage = JSON.parse(localStorage.getItem("Hunter"));
         hunters = new Population("Hunter", hunterStorage.count);
-
         let minerStorage = JSON.parse(localStorage.getItem("Miner"));
         miners = new Population("Miner", minerStorage.count);
         let lumberjackStorage = JSON.parse(localStorage.getItem("Lumberjack"));
@@ -187,10 +186,11 @@ function clickMeat(e) {
 }
 
 function lookForPeople() {
-    maxPopulation = houses.count * 4 + 1;
+    maxPopulation = (houses.count * 2 + 1) + (lodges.count * 4);
 
     if (maxPopulation > population && meat.amount > 0 && (Math.round(Math.random() * 100) / 100) > 0.96) {
         population++;
+        localStorage.setItem("Population", population);
         sayings.push("You have gained a new person.");
     }
 }
