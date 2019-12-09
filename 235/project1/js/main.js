@@ -8,6 +8,10 @@ let maxPopulation = 0;
 let population = 0;
 let populationPerTick = 60000;
 
+let hunters;
+let miners;
+let lumberjacks;
+
 //day and time
 let time;
 //build
@@ -16,7 +20,7 @@ let mineshafts;
 let lumberyards;
 let lodges;
 //upgrades
-let hunters;
+let hunterUpgrade;
 let recruiters;
 let townmasters;
 let upgradeNames = ["Novice", "Junior", "Veteran", "Master", "Grandmaster"];
@@ -56,9 +60,12 @@ function gameSetUp() {
         lodges = new Structure("Lodge", [30, 0, 15]);
         //population
         hunters = new Population("Hunter", 0);
-        recruiters = new Population("Recruiter", 0);
-        townmasters = new Population("Townmaster", 0);
-        //tools
+        miners = new Population("Miner", 0);
+        lumberjacks = new Population("Lumberjack", 0);
+        //Upgrades
+        hunterUpgrade = new Upgrade("HunterUpgrade", [50, 50, 50], 0)
+        recruiters = new Upgrade("Recruiter", [30, 50, 30], 0);
+        townmasters = new Upgrade("Townmaster", [30, 50, 30], 0);
         pickaxes = new Upgrade("Pickaxe", [30, 50, 30], 0);
         hatchets = new Upgrade("Hatchet", [30, 50, 30], 0);
         spears = new Upgrade("Spear", [25, 10, 5], 0);
@@ -87,8 +94,26 @@ function gameSetUp() {
         let lodgeStorage = JSON.parse(localStorage.getItem("Lodge"));
         lodges = new Structure("Lodges", lodgeStorage.resourceNeeded, lodgeStorage.count);
         //population
-        hunterStorage = JSON.parse(localStorage.getItem("Hunter"));
+        let hunterStorage = JSON.parse(localStorage.getItem("Hunter"));
         hunters = new Population("Hunter", hunterStorage.count);
+        let minerStorage = JSON.parse(localStorage.getItem("Miner"));
+        miners = new Population("Miner", minerStorage.count);
+        let lumberjackStorage = JSON.parse(localStorage.getItem("Lumberjack"));
+        lumberjacks = new Population("Lumberjack", lumberjackStorage.count);
+
+        //upgrades
+        let hunterUpgradeStorage = JSON.parse(localStorage.getItem("HunterUpgrade"));
+        hunterUpgrade = new Upgrade("HunterUpgrade", hunterUpgradeStorage.resourceNeeded, hunterUpgradeStorage.count);
+        let recruiterStorage = JSON.parse(localStorage.getItem("Recruiter"));
+        recruiters = new Upgrade("Recruiter", recruiterStorage.resourceNeeded, recruiterStorage.count);
+        let townmasterStorage = JSON.parse(localStorage.getItem("Townmaster"));
+        townmasters = new Upgrade("Townmaster", townmasterStorage.resourceNeeded, townmasterStorage.count);
+        let pickaxeStorage = JSON.parse(localStorage.getItem("Pickaxe"));
+        pickaxes = new Upgrade("Pickaxe", pickaxeStorage.resourceNeeded, pickaxeStorage.count);
+        let hatchetStorage = JSON.parse(localStorage.getItem("Hatchet"));
+        hatchets = new Upgrade("Hatchet", hatchetStorage.resourceNeeded, hatchetStorage.count);
+        let spearStorage = JSON.parse(localStorage.getItem("Spear"));
+        spears = new Upgrade("Spear", spearStorage.resourceNeeded, spearStorage.count);
     }
 
     //remember to remove this later
@@ -109,12 +134,12 @@ function gameSetUp() {
         u.addEventListener("click", upgradeClicked);
     }
 
-    // upgradeButtons[0].querySelector("div").innerHTML = GetResources(hunters);
-    // upgradeButtons[1].querySelector("div").innerHTML = GetResources(recruiters);
-    // upgradeButtons[2].querySelector("div").innerHTML = GetResources(townmasters);
-    // upgradeButtons[3].querySelector("div").innerHTML = GetResources(pickaxes);
-    // upgradeButtons[4].querySelector("div").innerHTML = GetResources(hatchets);
-    // upgradeButtons[5].querySelector("div").innerHTML = GetResources(spears);
+    upgradeButtons[0].querySelector("div").innerHTML = GetResources(hunterUpgrade);
+    upgradeButtons[1].querySelector("div").innerHTML = GetResources(recruiters);
+    upgradeButtons[2].querySelector("div").innerHTML = GetResources(townmasters);
+    upgradeButtons[3].querySelector("div").innerHTML = GetResources(pickaxes);
+    upgradeButtons[4].querySelector("div").innerHTML = GetResources(hatchets);
+    upgradeButtons[5].querySelector("div").innerHTML = GetResources(spears);
 
     // set ticks
     let tickerUpdating = setInterval(tickerLoop, 200);
@@ -298,6 +323,11 @@ function updateLabels() {
     else
         timeStamp[1].innerHTML += Math.trunc(time.minutes);
 
+
+    let popValues = document.querySelectorAll(".popValue");
+    popValues[0].innerHTML = hunters.count;
+    popValues[1].innerHTML = miners.count;
+    popValues[2].innerHTML = lumberjacks.count;
 }
 
 function changeJobs(e) {
