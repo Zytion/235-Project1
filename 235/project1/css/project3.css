@@ -104,14 +104,18 @@ button {
     border: 1px solid black;
 }
 
+button:hover {
+    background-color: rgb(219, 202, 184);
+}
+
+button:active {
+    background-color: rgb(207, 192, 176);
+}
+
 button > div {
     font-size: 10px;
 }
 
-#Meat button {
-    height: 220px;
-    text-align: center;
-}
 #popControls {
     display: flex;
     justify-content: space-around;
@@ -120,4 +124,19 @@ button > div {
 
 #popControls button {
     width: min-content;
+}
+
+#meatButton img {
+    width: 100%;
+}
+
+#meatButton {
+    border: transparent;
+    background-color: #fce5cdff;
+        height: 220px;
+    text-align: center;
+}
+
+#meatButton:active img {
+    transform: scale(0.9, 0.9);
 }
