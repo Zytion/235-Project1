@@ -33,6 +33,7 @@ let upgradeButtons;
 window.onload = () => {
     buildButtons = document.querySelectorAll(".buildButton");
     upgradeButtons = document.querySelectorAll(".upgradeButton");
+
     gameSetUp();
 }
 
@@ -87,16 +88,21 @@ function gameSetUp() {
         b.addEventListener("click", buildClicked);
     }
 
-    buildButtons[0].querySelector("div").innerHTML = GetStucutreResources(houses);
-    buildButtons[1].querySelector("div").innerHTML = GetStucutreResources(mineshafts);
-    buildButtons[2].querySelector("div").innerHTML = GetStucutreResources(lumberyards);
-    buildButtons[3].querySelector("div").innerHTML = GetStucutreResources(lodges);
+    buildButtons[0].querySelector("div").innerHTML = GetResources(houses);
+    buildButtons[1].querySelector("div").innerHTML = GetResources(mineshafts);
+    buildButtons[2].querySelector("div").innerHTML = GetResources(lumberyards);
+    buildButtons[3].querySelector("div").innerHTML = GetResources(lodges);
 
-    for(let u of upgradeButtons)
-    {
+    for (let u of upgradeButtons) {
         u.addEventListener("click", upgradeClicked);
     }
 
+    upgradeButtons[0].querySelector("div").innerHTML = GetResources(hunterUpgrades);
+    upgradeButtons[1].querySelector("div").innerHTML = GetResources(recruiterUpgrades);
+    upgradeButtons[2].querySelector("div").innerHTML = GetResources(townmasterUpgrades);
+    upgradeButtons[3].querySelector("div").innerHTML = GetResources(pickaxes);
+    upgradeButtons[4].querySelector("div").innerHTML = GetResources(hatchets);
+    upgradeButtons[5].querySelector("div").innerHTML = GetResources(spears);
 
     // set ticks
     let tickerUpdating = setInterval(tickerLoop, 200);
@@ -148,22 +154,22 @@ let buildClicked = (e) => {
     switch (e.target.dataset.build) {
         case "house":
             buildStructure(houses);
-            str = GetStucutreResources(houses);
+            str = GetResources(houses);
             i = 0;
             break;
         case "mine":
             buildStructure(mineshafts);
-            str = GetStucutreResources(mineshafts);
+            str = GetResources(mineshafts);
             i = 1;
             break;
         case "lumber":
             buildStructure(lumberyards);
-            str = GetStucutreResources(lumberyards);
+            str = GetResources(lumberyards);
             i = 2;
             break;
         case "lodge":
             buildStructure(lodges);
-            str = GetStucutreResources(lodges);
+            str = GetResources(lodges);
             i = 3;
             break;
     }
@@ -191,19 +197,15 @@ function buildStructure(e) {
     e.build();
 }
 
-function GetStucutreResources(e)
-{
+function GetResources(e) {
     let str = "";
-    if(e.resourceNeeded[0] > 0)
-    {
+    if (e.resourceNeeded[0] > 0) {
         str += "Wood: " + e.resourceNeeded[0];
     }
-    if(e.resourceNeeded[1] > 0)
-    {
+    if (e.resourceNeeded[1] > 0) {
         str += ", Stone: " + e.resourceNeeded[1];
     }
-    if(e.resourceNeeded[2] > 0)
-    {
+    if (e.resourceNeeded[2] > 0) {
         str += ", Ore: " + e.resourceNeeded[2];
     }
     return str;
@@ -212,25 +214,39 @@ function GetStucutreResources(e)
 let upgradeClicked = (e) => {
     let i;
     let str = "";
-    switch (e.target.dataset.build) {
+    switch (e.target.dataset.upgrade) {
         case "hunter":
-
+            upgradeTool(hunterUpgrades);
+            str += GetResources(hunterUpgrades);
             i = 0;
             break;
         case "recruit":
-
+            upgradeTool(recruiterUpgrades);
+            str += GetResources(recruiterUpgrades);
             i = 1;
             break;
         case "townmaster":
- 
+            upgradeTool(townmasterUpgrades);
+            str += GetResources(townmasterUpgrades);
             i = 2;
             break;
         case "pickaxe":
-
+            upgradeTool(pickaxes);
+            str += GetResources(pickaxes);
             i = 3;
             break;
+        case "hatchet":
+            upgradeTool(hatchets);
+            str += GetResources(hatchets);
+            i = 4;
+            break;
+        case "spear":
+            upgradeTool(spears);
+            str += GetResources(spears);
+            i = 5;
+            break;
     }
-    //upgradeButtons[i].querySelector("div").innerHTML = str;
+    upgradeButtons[i].querySelector("div").innerHTML = str;
 }
 
 function upgradeTool(e) {
