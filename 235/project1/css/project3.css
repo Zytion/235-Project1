@@ -40,8 +40,7 @@
 #Population{
     grid-row: 3 / span 2;
     grid-column: 1 / span 1;
-    height: 1
-    80px;
+    height: 180px;
 }
 .popValue {
     padding: 0 0 0 5px;
