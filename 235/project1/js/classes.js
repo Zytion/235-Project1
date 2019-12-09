@@ -81,3 +81,19 @@ class Upgrade {
     }
 
 }
+
+class Population {
+    constructor(name, count = 0) {
+        this.name = name;
+        this.count = count;
+    }
+
+    increase() {
+        this.count++;
+    }
+
+    decrease() {
+        this.count--;
+    }
+
+}
