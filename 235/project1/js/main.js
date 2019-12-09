@@ -30,7 +30,7 @@ let hatchets;
 let spears;
 let toolUpgradeNames = ["Stone", "Iron", "Steel", "Titanium", "Diamond"];
 //list of sayings
-let sayings = ["Welcome to Meat Clicker", "Get started by clicking on the meat."]
+let sayings = ["Get started by clicking on the meat.", "Welcome to Meat Clicker"]
 let buildButtons;
 let upgradeButtons;
 let jobUpButtons;
@@ -70,12 +70,12 @@ function gameSetUp() {
         miners = new Population("Miner", 0);
         lumberjacks = new Population("Lumberjack", 0);
         //Upgrades
-        hunterUpgrades = new Upgrade("HunterUpgrade", [50, 50, 50], 0)
-        recruiters = new Upgrade("Recruiter", [30, 50, 30], 0);
-        townmasters = new Upgrade("Townmaster", [30, 50, 30], 0);
-        pickaxes = new Upgrade("Pickaxe", [30, 50, 30], 0);
-        hatchets = new Upgrade("Hatchet", [30, 50, 30], 0);
-        spears = new Upgrade("Spear", [25, 10, 5], 0);
+        hunterUpgrades = new Upgrade("HunterUpgrade", [50, 50, 50])
+        recruiters = new Upgrade("Recruiter", [30, 50, 30]);
+        townmasters = new Upgrade("Townmaster", [30, 50, 30]);
+        pickaxes = new Upgrade("Pickaxe", [30, 50, 30]);
+        hatchets = new Upgrade("Hatchet", [30, 50, 30]);
+        spears = new Upgrade("Spear", [25, 10, 5]);
     }
     //if there is meat in the local storage, set up the game if it has any values
     else {
@@ -103,11 +103,13 @@ function gameSetUp() {
         //population
         let hunterStorage = JSON.parse(localStorage.getItem("Hunter"));
         hunters = new Population("Hunter", hunterStorage.count);
-
         let minerStorage = JSON.parse(localStorage.getItem("Miner"));
         miners = new Population("Miner", minerStorage.count);
         let lumberjackStorage = JSON.parse(localStorage.getItem("Lumberjack"));
         lumberjacks = new Population("Lumberjack", lumberjackStorage.count);
+
+        let populationStorage = JSON.parse(localStorage.getItem("Population"));
+        population = populationStorage;
 
         //upgrades
         let hunterUpgradeStorage = JSON.parse(localStorage.getItem("HunterUpgrade"));
@@ -180,6 +182,19 @@ function gameLoop() {
     //Update labels
     updateLabels();
     //generate notifications
+    updateNotifications();
+}
+
+function updateNotifications() {
+    let notificationList = document.querySelector("#notices");
+    let str = "Day " + Math.trunc(time.days);
+
+    while (sayings.length > 0) {
+        let li = document.createElement("li");
+        li.innerHTML = str + ": " + sayings.pop();
+        notificationList.appendChild(li);
+        notificationList.scrollTop = notificationList.scrollHeight;
+    }
 }
 
 function clickMeat(e) {
@@ -193,6 +208,8 @@ function lookForPeople() {
         population++;
         sayings.push("You have gained a new person.");
     }
+
+    localStorage.setItem("Population", JSON.stringify(population));
 }
 
 let buildClicked = (e) => {
@@ -209,7 +226,7 @@ let buildClicked = (e) => {
             str = GetResources(mineshafts);
             i = 1;
             break;
-        case "lumber":
+        case "lumberyard":
             buildStructure(lumberyards);
             str = GetResources(lumberyards);
             i = 2;
@@ -241,7 +258,11 @@ function buildStructure(e) {
         return;
     }
     //otherwise, build structure
+    wood.spend(e.resourceNeeded[0]);
+    stone.spend(e.resourceNeeded[1]);
+    ore.spend(e.resourceNeeded[2]);
     e.build();
+    sayings.push("You build a " + e.name + ".")
 }
 
 function GetResources(e) {
@@ -267,7 +288,7 @@ let upgradeClicked = (e) => {
             str += GetResources(hunterUpgrades);
             i = 0;
             break;
-        case "recruit":
+        case "recruiter":
             upgradeTool(recruiters);
             str += GetResources(recruiters);
             i = 1;
@@ -312,7 +333,11 @@ function upgradeTool(e) {
         alert("You do not have enough ore.");
         return;
     }
+    wood.spend(e.resourceNeeded[0]);
+    stone.spend(e.resourceNeeded[1]);
+    ore.spend(e.resourceNeeded[2]);
     e.upgrade();
+    sayings.push("You upgrade your " + e.name + "s.")
 }
 
 function updateLabels() {
@@ -401,7 +426,7 @@ function updatePopControls() {
 }
 
 function gatherResources() {
-    meat.resourcesPerTick += tickManager * (lodges.count + hunters.count * (hunterUpgrades.count + 1));
+    meat.resourcesPerTick += tickManager * (lodges.count + hunters.count * (hunterUpgrades.count + 1) + spears.count);
     wood.resourcesPerTick = tickManager * (lumberyards.count + lumberjacks.count * (hatchets.count + 1));
     stone.resourcesPerTick = tickManager * (mineshafts.count + miners.count * (pickaxes.count + 1));
     ore.resourcesPerTick = tickManager * (mineshafts.count + miners.count + pickaxes.count) * 0.1;
@@ -410,16 +435,17 @@ function gatherResources() {
 function feedPeople() {
     if (meat.amount <= (tickManager * population * -0.5) && population > 0) {
         population--;
-        let totalJobs = hunters.count + miners.count + lumberjacks.count;
-        if (totalJobs > population) {
-            if (miners.count > 0)
-                miners.decrease();
-            else if (lumberjacks.count > 0)
-                lumberjacks.decrease();
-            else if (hunters.count > 0)
-                hunters.decrease();
-        }
+        sayings.push("You have lost a person you could not feed.");
         meat.amount = 0;
     }
     meat.resourcesPerTick = tickManager * population * -0.5;
+    let totalJobs = hunters.count + miners.count + lumberjacks.count;
+    if (totalJobs > population) {
+        if (miners.count > 0)
+            miners.decrease();
+        else if (lumberjacks.count > 0)
+            lumberjacks.decrease();
+        else if (hunters.count > 0)
+            hunters.decrease();
+    }
 }

@@ -6,7 +6,7 @@ class Resources {
     }
 
     spend(amt) {
-        if (amount >= amt) {
+        if (this.amount >= amt) {
             this.amount -= amt;
             return this.amount;
         }
@@ -58,7 +58,7 @@ class Structure {
 }
 
 class Upgrade {
-    constructor(name, resourceNeeded, totalUpgrades = 5, count = 0) {
+    constructor(name, resourceNeeded, count = 0, totalUpgrades = 5) {
         this.name = name;
         this.resourceNeeded = resourceNeeded;
         this.totalUpgrades = totalUpgrades;
@@ -70,7 +70,7 @@ class Upgrade {
     upgrade() {
         if (this.count < this.totalUpgrades) {
             this.count++;
-            for (let i = 0; i < this.resourceNeeded; i++) {
+            for (let i = 0; i < this.resourceNeeded.length; i++) {
                 this.resourceNeeded[i] *= 2;
             }
         }
