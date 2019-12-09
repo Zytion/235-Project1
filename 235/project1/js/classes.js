@@ -50,8 +50,8 @@ class Structure {
 
     build() {
         this.count++;
-        for (let i = 0; i < this.resourcesNeeded; i++) {
-            this.resourcesNeeded[i] * 2;
+        for (let i = 0; i < this.resourceNeeded.length; i++) {
+            this.resourceNeeded[i] *= 2;
         }
         localStorage.setItem(this.name, JSON.stringify(this));
     }
@@ -70,8 +70,8 @@ class Upgrade {
     upgrade() {
         if (this.count < this.totalUpgrades) {
             this.count++;
-            for (let i = 0; i < this.resourcesNeeded; i++) {
-                this.resourcesNeeded[i] * 2;
+            for (let i = 0; i < this.resourceNeeded; i++) {
+                this.resourceNeeded[i] *= 2;
             }
         }
         else {
@@ -91,7 +91,7 @@ class Population {
 
     increase() {
         this.count++;
-        localStorage.setItem(this.name, JSON.strinfify(this));
+        localStorage.setItem(this.name, JSON.stringify(this));
     }
 
     decrease() {
