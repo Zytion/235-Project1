@@ -6,6 +6,7 @@ let ore;
 //population
 let maxPopulation = 1;
 let population = 1;
+localStorage.setItem("Population", population);
 let populationPerTick = 60000;
 let peopleUpdating;
 
@@ -255,9 +256,9 @@ function clickMeat(e) {
 }
 
 function lookForPeople() {
-    console.log("Looking");
     if (maxPopulation > population && meat.amount > 0) {
         population++;
+        localStorage.setItem("Population", population);
         sayings.push("You have gained a new person.");
     }
     if(maxPopulation < population)
