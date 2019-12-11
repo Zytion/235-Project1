@@ -41,10 +41,12 @@ class Time {
 }
 
 class Structure {
-    constructor(name, resourceNeeded, count = 0) {
+    constructor(name, resourceNeeded, count = 0, housing = 1, jobs = 4) {
         this.name = name;
         this.resourceNeeded = resourceNeeded;
         this.count = count;
+        this.housing = housing;
+        this.jobs = jobs;
         localStorage.setItem(this.name, JSON.stringify(this));
     }
 

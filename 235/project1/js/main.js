@@ -5,13 +5,17 @@ let stone;
 let ore;
 //population
 let maxPopulation = 1;
-let workingPopulation = 0;
 let population = 1;
 let populationPerTick = 60000;
+let peopleUpdating;
 
+//Jobs
 let hunters;
 let miners;
 let lumberjacks;
+
+let workingPopulation = 0;
+let maxJobs = 0;
 
 //day and time
 let time;
@@ -30,7 +34,7 @@ let hatchets;
 let spears;
 let toolUpgradeNames = ["Stone", "Iron", "Steel", "Titanium", "Diamond"];
 //list of sayings
-let sayings = ["Get started by clicking on the meat.", "Welcome to Meat Clicker"]
+let sayings = ["Hover over things for help", "Get started by clicking on the meat.", "Welcome to Meat Clicker"]
 let buildButtons;
 let upgradeButtons;
 let jobUpButtons;
@@ -52,34 +56,42 @@ window.onload = () => {
 function gameSetUp() {
     //if the localStorage of meat is null, set up game
     if (localStorage.getItem("Meat") == null) {
-        //set up resources
+        //#region Resources
         meat = new Resources("Meat", 0, .1);
         wood = new Resources("Wood", 0, 0);
         stone = new Resources("Stone", 0, 0);
         ore = new Resources("Ore", 0, 0);
+        //#endregion
+
         //set up time
         time = new Time(0, 0);
-        //set up buildings
+
+        //#region Buildings
         //resources in order is wood, stone, ore
-        houses = new Structure("House", [10, 0, 0]);
+        houses = new Structure("House", [10, 0, 0], 0, 4, 0);
         mineshafts = new Structure("Mineshaft", [30, 0, 0]);
         lumberyards = new Structure("Lumberyard", [30, 15, 5]);
         lodges = new Structure("Lodge", [30, 0, 15]);
-        //population
+        //#endregion
+
+        //#region Population
         hunters = new Population("Hunter", 0);
         miners = new Population("Miner", 0);
         lumberjacks = new Population("Lumberjack", 0);
-        //Upgrades
+        //#endregion
+
+        //#region Upgrades
         hunterUpgrades = new Upgrade("HunterUpgrade", [50, 50, 50])
         recruiters = new Upgrade("Recruiter", [30, 50, 30]);
         townmasters = new Upgrade("Townmaster", [30, 50, 30]);
         pickaxes = new Upgrade("Pickaxe", [30, 50, 30]);
         hatchets = new Upgrade("Hatchet", [30, 50, 30]);
         spears = new Upgrade("Spear", [25, 10, 5]);
+        //#endregion
     }
     //if there is meat in the local storage, set up the game if it has any values
     else {
-        //resources
+        //#region Resources
         let meatStorage = JSON.parse(localStorage.getItem("Meat"));
         meat = new Resources("Meat", meatStorage.amount, meatStorage.resourcesPerTick);
         let woodStorage = JSON.parse(localStorage.getItem("Wood"));
@@ -88,19 +100,24 @@ function gameSetUp() {
         stone = new Resources("Stone", stoneStorage.amount, stoneStorage.resourcesPerTick);
         let oreStorage = JSON.parse(localStorage.getItem("Ore"));
         ore = new Resources("Ore", oreStorage.amount, oreStorage.resourcesPerTick);
+        //#endregion
+
         //time
         let timeStorage = JSON.parse(localStorage.getItem("Time"));
         time = new Time(timeStorage.ticks);
-        //buildings
+
+        //#region Buildings
         let houseStorage = JSON.parse(localStorage.getItem("House"));
-        houses = new Structure("House", houseStorage.resourceNeeded, houseStorage.count);
+        houses = new Structure("House", houseStorage.resourceNeeded, houseStorage.count, 4, 0);
         let mineshaftStorage = JSON.parse(localStorage.getItem("Mineshaft"));
         mineshafts = new Structure("Mineshaft", mineshaftStorage.resourceNeeded, mineshaftStorage.count);
         let lumberyardStorage = JSON.parse(localStorage.getItem("Lumberyard"));
         lumberyards = new Structure("Lumberyard", lumberyardStorage.resourceNeeded, lumberyardStorage.count);
-        let lodgeStorage = JSON.parse(localStorage.getItem("Lodge"));
+        let lodgeStorage = JSON.parse(localStorage.getItem("Lodges"));
         lodges = new Structure("Lodges", lodgeStorage.resourceNeeded, lodgeStorage.count);
-        //population
+        //#endregion
+
+        //#region Population
         let hunterStorage = JSON.parse(localStorage.getItem("Hunter"));
         hunters = new Population("Hunter", hunterStorage.count);
         let minerStorage = JSON.parse(localStorage.getItem("Miner"));
@@ -110,8 +127,9 @@ function gameSetUp() {
 
         let populationStorage = JSON.parse(localStorage.getItem("Population"));
         population = populationStorage;
+        //#endregion
 
-        //upgrades
+        //#region Upgrades
         let hunterUpgradeStorage = JSON.parse(localStorage.getItem("HunterUpgrade"));
         hunterUpgrades = new Upgrade("HunterUpgrade", hunterUpgradeStorage.resourceNeeded, hunterUpgradeStorage.count);
         let recruiterStorage = JSON.parse(localStorage.getItem("Recruiter"));
@@ -124,40 +142,75 @@ function gameSetUp() {
         hatchets = new Upgrade("Hatchet", hatchetStorage.resourceNeeded, hatchetStorage.count);
         let spearStorage = JSON.parse(localStorage.getItem("Spear"));
         spears = new Upgrade("Spear", spearStorage.resourceNeeded, spearStorage.count);
+        //#endregion
     }
 
+    //p = 5(houses + 2 * townmaster) + (mineshaft + lodges + lumberyards)(townmater / 5) + 1
+    houses.housing = 5 * (houses.count + 2 * townmasters.count);
+    mineshafts.housing = mineshafts.count * (townmasters.count / 5);
+    lumberyards.housing = lumberyards.count * (townmasters.count / 5);
+    lodges.housing = lumberyards.count * (townmasters.count / 5);
+
+    //#region Setting Up Buttons
+
+    //#region Build Buttons
     document.querySelector('#meatButton').addEventListener('click', clickMeat);
 
     for (let b of buildButtons) {
         b.addEventListener("click", buildClicked);
+
     }
-
     buildButtons[0].querySelector("div").innerHTML = GetResources(houses);
-    buildButtons[1].querySelector("div").innerHTML = GetResources(mineshafts);
-    buildButtons[2].querySelector("div").innerHTML = GetResources(lumberyards);
-    buildButtons[3].querySelector("div").innerHTML = GetResources(lodges);
+    buildButtons[0].querySelector(".counter").innerHTML = houses.count;
 
+    buildButtons[1].querySelector("div").innerHTML = GetResources(mineshafts);
+    buildButtons[1].querySelector(".counter").innerHTML = mineshafts.count;
+
+    buildButtons[2].querySelector("div").innerHTML = GetResources(lumberyards);
+    buildButtons[2].querySelector(".counter").innerHTML = lumberyards.count;
+
+    buildButtons[3].querySelector("div").innerHTML = GetResources(lodges);
+    buildButtons[3].querySelector(".counter").innerHTML = lodges.count;
+    //#endregion
+
+    //#region Upgrade Buttons
     for (let u of upgradeButtons) {
         u.addEventListener("click", upgradeClicked);
     }
 
     upgradeButtons[0].querySelector("div").innerHTML = GetResources(hunterUpgrades);
-    upgradeButtons[1].querySelector("div").innerHTML = GetResources(recruiters);
-    upgradeButtons[2].querySelector("div").innerHTML = GetResources(townmasters);
-    upgradeButtons[3].querySelector("div").innerHTML = GetResources(pickaxes);
-    upgradeButtons[4].querySelector("div").innerHTML = GetResources(hatchets);
-    upgradeButtons[5].querySelector("div").innerHTML = GetResources(spears);
+    upgradeButtons[0].querySelector(".counter").innerHTML = hunterUpgrades.count;
 
+    upgradeButtons[1].querySelector("div").innerHTML = GetResources(recruiters);
+    upgradeButtons[1].querySelector(".counter").innerHTML = recruiters.count;
+
+    upgradeButtons[2].querySelector("div").innerHTML = GetResources(townmasters);
+    upgradeButtons[2].querySelector(".counter").innerHTML = townmasters.count;
+
+    upgradeButtons[3].querySelector("div").innerHTML = GetResources(pickaxes);
+    upgradeButtons[3].querySelector(".counter").innerHTML = pickaxes.count;
+
+    upgradeButtons[4].querySelector("div").innerHTML = GetResources(hatchets);
+    upgradeButtons[4].querySelector(".counter").innerHTML = hatchets.count;
+
+    upgradeButtons[5].querySelector("div").innerHTML = GetResources(spears);
+    upgradeButtons[5].querySelector(".counter").innerHTML = spears.count;
+    //#endregion
+
+    //#region Population Control Buttons
     for (let up of jobUpButtons) {
         up.addEventListener("click", changeJobs);
     }
     for (let down of jobDownButtons) {
         down.addEventListener("click", changeJobs);
     }
+    //#endregion
+
+    //#endregion
 
     // set ticks
     let tickerUpdating = setInterval(tickerLoop, 200);
-    let peopleUpdating = setInterval(lookForPeople, populationPerTick);
+    peopleUpdating = setInterval(lookForPeople, populationPerTick - (recruiters.count * 10000));
 
     setInterval(gameLoop, 200);
 }
@@ -178,7 +231,7 @@ function gameLoop() {
 
     gatherResources();
 
-    lookForPeople();
+    updatePopulationValues();
     //Update labels
     updateLabels();
     //generate notifications
@@ -198,46 +251,68 @@ function updateNotifications() {
 }
 
 function clickMeat(e) {
-    meat.update(1);
+    meat.update(1 + (hunterUpgrades.count));
 }
 
 function lookForPeople() {
-    maxPopulation = houses.count * 4 + 1;
-
-    if (maxPopulation > population && meat.amount > 0 && (Math.round(Math.random() * 100) / 100) > 0.96) {
+    console.log("Looking");
+    if (maxPopulation > population && meat.amount > 0) {
         population++;
         sayings.push("You have gained a new person.");
+    }
+    if(maxPopulation < population)
+    {
+        population--;
+        sayings.push("A person has left because they do not have housing!");
     }
 
     localStorage.setItem("Population", JSON.stringify(population));
 }
 
+function updatePopulationValues() {
+        //p = 5(houses + 2 * townmaster) + (mineshaft + lodges + lumberyards)(townmater / 5) + 1
+        maxPopulation = Math.trunc(houses.housing + mineshafts.housing + lodges.housing + lumberyards.housing + 1);
+
+        workingPopulation = miners.count + lumberjacks.count + hunters.count;
+        maxJobs = 4 * (mineshafts.count + lumberyards.count + lodges.count) + 3;
+}
+
 let buildClicked = (e) => {
     let i;
-    let str = "";
+    let newResourceNeeded = "";
+    let count = 0;
     switch (e.currentTarget.dataset.build) {
         case "house":
             buildStructure(houses);
-            str = GetResources(houses);
+            newResourceNeeded = GetResources(houses);
+            houses.housing = 5 * (houses.count + 2 * townmasters.count);
+            count = houses.count;
             i = 0;
             break;
         case "mine":
             buildStructure(mineshafts);
-            str = GetResources(mineshafts);
+            newResourceNeeded = GetResources(mineshafts);
+            mineshafts.housing = mineshafts.count * (townmasters.count / 5);
+            count = mineshafts.count;
             i = 1;
             break;
         case "lumberyard":
             buildStructure(lumberyards);
-            str = GetResources(lumberyards);
+            newResourceNeeded = GetResources(lumberyards);
+            lumberyards.housing = lumberyards.count * (townmasters.count / 5);
+            count = lumberyards.count;
             i = 2;
             break;
         case "lodge":
             buildStructure(lodges);
-            str = GetResources(lodges);
+            newResourceNeeded = GetResources(lodges);
+            lodges.housing = lodges.count * (townmasters.count / 5);
+            count = lodges.count;
             i = 3;
             break;
     }
-    buildButtons[i].querySelector("div").innerHTML = str;
+    buildButtons[i].querySelector("div").innerHTML = newResourceNeeded;
+    buildButtons[i].querySelector(".counter").innerHTML = count;
 }
 
 //build structure, if not enough resource, it will send alert and then return
@@ -282,39 +357,54 @@ function GetResources(e) {
 let upgradeClicked = (e) => {
     let i;
     let str = "";
+    let count = 0;
     switch (e.currentTarget.dataset.upgrade) {
         case "hunter":
             upgradeTool(hunterUpgrades);
             str += GetResources(hunterUpgrades);
+            count = hunterUpgrades.count;
             i = 0;
             break;
         case "recruiter":
             upgradeTool(recruiters);
             str += GetResources(recruiters);
+            count = recruiters.count;
+            clearInterval(peopleUpdating);
+            peopleUpdating = setInterval(lookForPeople, populationPerTick - (recruiters.count * 10000));
             i = 1;
             break;
         case "townmaster":
             upgradeTool(townmasters);
             str += GetResources(townmasters);
+            count = townmasters.count;
             i = 2;
+            //Update max housing
+            houses.housing = 5 * (houses.count + 2 * townmasters.count);
+            mineshafts.housing = mineshafts.count * (townmasters.count / 5);
+            lumberyards.housing = lumberyards.count * (townmasters.count / 5);
+            lodges.housing = lumberyards.count * (townmasters.count / 5);
             break;
         case "pickaxe":
             upgradeTool(pickaxes);
             str += GetResources(pickaxes);
+            count = pickaxes.count;
             i = 3;
             break;
         case "hatchet":
             upgradeTool(hatchets);
             str += GetResources(hatchets);
+            count = hatchets.count;
             i = 4;
             break;
         case "spear":
             upgradeTool(spears);
             str += GetResources(spears);
+            count = spears.count;
             i = 5;
             break;
     }
     upgradeButtons[i].querySelector("div").innerHTML = str;
+    upgradeButtons[i].querySelector(".counter").innerHTML = count;
 }
 
 function upgradeTool(e) {
@@ -353,8 +443,11 @@ function updateLabels() {
     toolTips[2].innerHTML = "Stone per tick: " + Math.round(stone.resourcesPerTick * 1000) / 100;
     toolTips[3].innerHTML = "Ore per tick: " + Math.round(ore.resourcesPerTick * 1000) / 100;
 
-    let populationLabel = document.querySelector("h3");
-    populationLabel.innerHTML = population + "/" + maxPopulation;
+    let populationLabel = document.querySelector("h3#popTrack");
+    populationLabel.innerHTML = "Population: " + population + "/" + maxPopulation;
+
+    let jobLabel = document.querySelector("h3#jobTrack");
+    jobLabel.innerHTML = "Jobs: " + workingPopulation + "/" + maxJobs;
 
     let timeStamp = document.querySelectorAll("h4");
     timeStamp[0].innerHTML = "Day: " + Math.trunc(time.days);
@@ -365,9 +458,9 @@ function updateLabels() {
         timeStamp[1].innerHTML += Math.trunc(time.minutes);
 
     let popValues = document.querySelectorAll(".popValue");
-    popValues[0].innerHTML = hunters.count;
-    popValues[1].innerHTML = miners.count;
-    popValues[2].innerHTML = lumberjacks.count;
+    popValues[0].innerHTML = hunters.count + "/" + (lodges.count * lodges.jobs + 1);
+    popValues[1].innerHTML = miners.count + "/" + (mineshafts.count * mineshafts.jobs + 1);
+    popValues[2].innerHTML = lumberjacks.count + "/" + (lumberyards.count * lumberyards.jobs + 1);
 
     updatePopControls();
 }
@@ -397,10 +490,10 @@ function changeJobs(e) {
 }
 
 function updatePopControls() {
-    let totalJobs = hunters.count + miners.count + lumberjacks.count;
     let upArrows = document.querySelectorAll(".upArrow");
     let downArrows = document.querySelectorAll(".downArrow");
-    if (population <= totalJobs) {
+    
+    if (population <= workingPopulation) {
         for (let arrow of upArrows) {
             arrow.disabled = true;
         }
@@ -410,6 +503,13 @@ function updatePopControls() {
             arrow.disabled = false;
         }
     }
+    
+    if (hunters.count >= lodges.count * lodges.jobs + 1)
+        upArrows[0].disabled = true;
+    if (miners.count >= mineshafts.count * mineshafts.jobs + 1)
+        upArrows[1].disabled = true;
+    if (lumberjacks.count >= lumberyards.count * lumberyards.jobs + 1)
+        upArrows[2].disabled = true;
 
     if (hunters.count == 0)
         downArrows[0].disabled = true;
@@ -426,19 +526,22 @@ function updatePopControls() {
 }
 
 function gatherResources() {
-    meat.resourcesPerTick += tickManager * (lodges.count + hunters.count * (hunterUpgrades.count + 1) + spears.count);
-    wood.resourcesPerTick = tickManager * (lumberyards.count + lumberjacks.count * (hatchets.count + 1));
-    stone.resourcesPerTick = tickManager * (mineshafts.count + miners.count * (pickaxes.count + 1));
-    ore.resourcesPerTick = tickManager * (mineshafts.count + miners.count + pickaxes.count) * 0.1;
+    //meat = -population + 5(hunters.count * (spears.count/5 + 1))
+    meat.resourcesPerTick += tickManager * 5 * (hunters.count * (spears.count / 5 + 1));
+    wood.resourcesPerTick = tickManager * (lumberjacks.count * (hatchets.count / 5 + 1));
+    stone.resourcesPerTick = tickManager * (miners.count * (pickaxes.count / 5 + 1) * 0.5);
+    ore.resourcesPerTick = tickManager * (miners.count + (pickaxes.count / 2 + 1)) * 0.3;
 }
 
 function feedPeople() {
-    if (meat.amount <= (tickManager * population * -0.5) && population > 0) {
+    if (meat.amount <= (tickManager * population) && population > 0) {
         population--;
         sayings.push("You have lost a person you could not feed.");
         meat.amount = 0;
     }
-    meat.resourcesPerTick = tickManager * population * -0.5;
+
+    //meat = -population + 5(hunters.count * (spears.count/5 + 1))
+    meat.resourcesPerTick = tickManager * -population;
     let totalJobs = hunters.count + miners.count + lumberjacks.count;
     if (totalJobs > population) {
         if (miners.count > 0)
