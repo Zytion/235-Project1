@@ -43,7 +43,8 @@ let jobDownButtons;
 
 let tickManager = 0.05;
 
-let hasMedicine = false;
+//let hasMedicine = false;
+let eventTimer = 200000 + getRndInt(0, 70000);
 
 let previousDay = 0;
 
@@ -212,8 +213,9 @@ function gameSetUp() {
     //#endregion
 
     // set ticks
-    let tickerUpdating = setInterval(tickerLoop, 200);
+    setInterval(tickerLoop, 200);
     peopleUpdating = setInterval(lookForPeople, populationPerTick - (recruiters.count * 10000));
+    setInterval(newEvent, eventTimer);
 
     setInterval(gameLoop, 200);
 }
@@ -621,6 +623,17 @@ function goodEvent() {
         sayings.push("Your lumberjacks were inspired to work extra hard today. They have returned with a ton of wood.");
         wood.amount += wood.resourcesPerTick * 100;
     }
+}
+
+function newEvent() {
+    let rand = getRndInt(1, 2);
+    if (rand == 1) {
+        goodEvent();
+    }
+    else {
+        badEvent();
+    }
+    eventTimer = 150000 + getRndInt(0, 70000);
 }
 
 function getRndInt(min, max) {
