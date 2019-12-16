@@ -43,6 +43,9 @@ let jobDownButtons;
 
 let tickManager = 0.05;
 
+//let hasMedicine = false;
+let eventTimer = 200000 + getRndInt(0, 70000);
+
 let previousDay = 0;
 
 window.onload = () => {
@@ -58,7 +61,7 @@ function gameSetUp() {
     //if the localStorage of meat is null, set up game
     if (localStorage.getItem("Meat") == null) {
         //#region Resources
-        meat = new Resources("Meat", 0, .1);
+        meat = new Resources("Meat", 0, 0);
         wood = new Resources("Wood", 0, 0);
         stone = new Resources("Stone", 0, 0);
         ore = new Resources("Ore", 0, 0);
@@ -210,8 +213,9 @@ function gameSetUp() {
     //#endregion
 
     // set ticks
-    let tickerUpdating = setInterval(tickerLoop, 200);
+    setInterval(tickerLoop, 200);
     peopleUpdating = setInterval(lookForPeople, populationPerTick - (recruiters.count * 10000));
+    setInterval(newEvent, eventTimer);
 
     setInterval(gameLoop, 200);
 }
@@ -239,20 +243,12 @@ function gameLoop() {
     updateNotifications();
 }
 
-function updateNotifications() {
-    let notificationList = document.querySelector("#notices");
-    let str = "Day " + Math.trunc(time.days);
+function updatePopulationValues() {
+    //p = 5(houses + 2 * townmaster) + (mineshaft + lodges + lumberyards)(townmater / 5) + 1
+    maxPopulation = Math.trunc(houses.housing + mineshafts.housing + lodges.housing + lumberyards.housing + 1);
 
-    while (sayings.length > 0) {
-        let li = document.createElement("li");
-        li.innerHTML = str + ": " + sayings.pop();
-        notificationList.appendChild(li);
-        notificationList.scrollTop = notificationList.scrollHeight;
-    }
-}
-
-function clickMeat(e) {
-    meat.update(1 + (hunterUpgrades.count));
+    workingPopulation = miners.count + lumberjacks.count + hunters.count;
+    maxJobs = 4 * (mineshafts.count + lumberyards.count + lodges.count) + 3;
 }
 
 function lookForPeople() {
@@ -270,12 +266,34 @@ function lookForPeople() {
     localStorage.setItem("Population", JSON.stringify(population));
 }
 
-function updatePopulationValues() {
-        //p = 5(houses + 2 * townmaster) + (mineshaft + lodges + lumberyards)(townmater / 5) + 1
-        maxPopulation = Math.trunc(houses.housing + mineshafts.housing + lodges.housing + lumberyards.housing + 1);
+function GetResources(e) {
+    let str = "";
+    if (e.resourceNeeded[0] > 0) {
+        str += "Wood: " + e.resourceNeeded[0];
+    }
+    if (e.resourceNeeded[1] > 0) {
+        str += ", Stone: " + e.resourceNeeded[1];
+    }
+    if (e.resourceNeeded[2] > 0) {
+        str += ", Ore: " + e.resourceNeeded[2];
+    }
+    return str;
+}
 
-        workingPopulation = miners.count + lumberjacks.count + hunters.count;
-        maxJobs = 4 * (mineshafts.count + lumberyards.count + lodges.count) + 3;
+function clickMeat(e) {
+    meat.update(1 + (hunterUpgrades.count));
+}
+
+function updateNotifications() {
+    let notificationList = document.querySelector("#notices");
+    let str = "Day " + Math.trunc(time.days);
+
+    while (sayings.length > 0) {
+        let li = document.createElement("li");
+        li.innerHTML = str + ": " + sayings.pop();
+        notificationList.appendChild(li);
+        notificationList.scrollTop = notificationList.scrollHeight;
+    }
 }
 
 let buildClicked = (e) => {
@@ -339,20 +357,6 @@ function buildStructure(e) {
     ore.spend(e.resourceNeeded[2]);
     e.build();
     sayings.push("You build a " + e.name + ".")
-}
-
-function GetResources(e) {
-    let str = "";
-    if (e.resourceNeeded[0] > 0) {
-        str += "Wood: " + e.resourceNeeded[0];
-    }
-    if (e.resourceNeeded[1] > 0) {
-        str += ", Stone: " + e.resourceNeeded[1];
-    }
-    if (e.resourceNeeded[2] > 0) {
-        str += ", Ore: " + e.resourceNeeded[2];
-    }
-    return str;
 }
 
 let upgradeClicked = (e) => {
@@ -539,8 +543,7 @@ function feedPeople() {
         population--;
         sayings.push("You have lost a person you could not feed.");
         meat.amount = 0;
-    }
-
+    }   
     //meat = -population + 5(hunters.count * (spears.count/5 + 1))
     meat.resourcesPerTick = tickManager * -population;
     if (workingPopulation > population) {
@@ -552,3 +555,85 @@ function feedPeople() {
             hunters.decrease();
     }
 }
+
+function badEvent() {
+    let rand = getRndInt(1, 5);
+    if (rand == 1) {
+        sayings.push("Rats have invaded your supply of food.");
+        sayings.push("You have lost half your meat.");
+        meat.amount /= 2;
+    }
+    else if (rand == 2) {
+        sayings.push("Wood ants have decided that your storage room is a perfect new home.")
+        sayings.push("You have lost half of your food and a fourth of your wood.")
+        meat.amount /= 2;
+        wood.amount /= 4;
+    }
+    else if (rand == 3) {
+        sayings.push("A disease has infected your village.");
+        /* 
+        if (hasMedicine) {
+            sayings.push("The doctor's medicine has cured those infected.");
+            hasMedicine = false;
+        }
+        else {
+        */
+        let randomPeople = getRndInt(1, population / 3);
+        sayings.push("You have lost " + randomPeople + " people in your village.");
+        population -= randomPeople;
+        //}
+    }
+    else if (rand == 4) {
+        let randomStone = getRndInt(1, stone.amount / 5);
+        let randomOre = getRndInt(1, ore.count / 10);
+        sayings.push("Someone stole supplies from the supply house!");
+        sayings.push("You have lost some stone and ore.");
+        stone.amount -= randomStone;        
+        ore.amount -= randomOre;
+    }
+    else {
+        let randomPopulation = getRndInt(1, population / 8);
+        sayings.push(randomPopulation + " people are unhappy with your rule. They have left.");
+        population -= randomPopulation;
+    }
+}
+
+function goodEvent() {
+    let rand = getRndInt(1, 3);
+    /*
+    if (rand == 1) {
+        sayings.push("A doctor has come to your village and left you with medicine.");
+        if (!hasMedicine)
+            hasMedicine= true;
+        else ()
+    }
+    */
+    if (rand == 1) {
+        sayings.push("A trader has come to your village and has given you some ore.");
+        ore.amount += (ore.amount) / 12;
+    }
+    else if (rand == 2) {
+        sayings.push("Your miners found a great vein of ore!")
+        ore.amount += ore.amount / 10;
+        stone.amount += stone.amount / 10;
+    }
+    else if (rand == 3) {
+        sayings.push("Your lumberjacks were inspired to work extra hard today. They have returned with a ton of wood.");
+        wood.amount += wood.resourcesPerTick * 100;
+    }
+}
+function newEvent() {
+    let rand = getRndInt(1, 2);
+    if (rand == 1) {
+        goodEvent();
+    }
+    else {
+        badEvent();
+    }
+    eventTimer = 150000 + getRndInt(0, 70000);
+}
+
+function getRndInt(min, max) {
+    return Math.floor(Math.random() * (max - min) ) + min;
+}
+  
