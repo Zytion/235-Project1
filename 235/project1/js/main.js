@@ -114,8 +114,8 @@ function gameSetUp() {
         mineshafts = new Structure("Mineshaft", mineshaftStorage.resourceNeeded, mineshaftStorage.count);
         let lumberyardStorage = JSON.parse(localStorage.getItem("Lumberyard"));
         lumberyards = new Structure("Lumberyard", lumberyardStorage.resourceNeeded, lumberyardStorage.count);
-        let lodgeStorage = JSON.parse(localStorage.getItem("Lodges"));
-        lodges = new Structure("Lodges", lodgeStorage.resourceNeeded, lodgeStorage.count);
+        let lodgeStorage = JSON.parse(localStorage.getItem("Lodge"));
+        lodges = new Structure("Lodge", lodgeStorage.resourceNeeded, lodgeStorage.count);
         //#endregion
 
         //#region Population
@@ -528,14 +528,14 @@ function updatePopControls() {
 
 function gatherResources() {
     //meat = -population + 5(hunters.count * (spears.count/5 + 1))
-    meat.resourcesPerTick += tickManager * 5 * (hunters.count * (spears.count / 5 + 1));
-    wood.resourcesPerTick = tickManager * (lumberjacks.count * (hatchets.count / 5 + 1));
-    stone.resourcesPerTick = tickManager * (miners.count * (pickaxes.count / 5 + 1) * 0.5);
-    ore.resourcesPerTick = tickManager * (miners.count + (pickaxes.count / 2 + 1)) * 0.3;
+    meat.resourcesPerTick += tickManager * 5 * (hunters.count * (spears.count / 5));
+    wood.resourcesPerTick = tickManager * (lumberjacks.count * (hatchets.count / 5));
+    stone.resourcesPerTick = tickManager * (miners.count * (pickaxes.count / 5) * 0.5);
+    ore.resourcesPerTick = tickManager * (miners.count + (pickaxes.count / 2)) * 0.3;
 }
 
 function feedPeople() {
-    if (meat.amount <= (tickManager * population) && population > 0) {
+    if (meat.amount <= 0 && population > 0) {
         population--;
         sayings.push("You have lost a person you could not feed.");
         meat.amount = 0;
@@ -543,8 +543,7 @@ function feedPeople() {
 
     //meat = -population + 5(hunters.count * (spears.count/5 + 1))
     meat.resourcesPerTick = tickManager * -population;
-    let totalJobs = hunters.count + miners.count + lumberjacks.count;
-    if (totalJobs > population) {
+    if (workingPopulation > population) {
         if (miners.count > 0)
             miners.decrease();
         else if (lumberjacks.count > 0)
