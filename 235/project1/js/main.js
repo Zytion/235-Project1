@@ -5,7 +5,7 @@ let stone;
 let ore;
 //population
 let maxPopulation = 1;
-let population = 1;
+let population = 0;
 let populationPerTick = 60000;
 let peopleUpdating;
 
@@ -34,13 +34,13 @@ let hatchets;
 let spears;
 let toolUpgradeNames = ["Stone", "Iron", "Steel", "Titanium", "Diamond"];
 //list of sayings
-let sayings = ["Hover over things for help", "Get started by clicking on the meat.", "Welcome to Meat Clicker"]
+let sayings = [];
 let buildButtons;
 let upgradeButtons;
 let jobUpButtons;
 let jobDownButtons;
 
-let tickManager = 0.02;
+let tickManager = 0.01;
 
 //let hasMedicine = false;
 let eventTimer = 200000 + getRndInt(0, 70000);
@@ -227,6 +227,13 @@ function gameSetUp() {
 
     //#endregion
 
+if(time.days < 2)
+{
+    sayings.push("Hover over things for help");
+    sayings.push("Get started by clicking on the meat.");
+    sayings.push("Welcome to Meat Clicker");
+}
+
     // set ticks
     setInterval(tickerLoop, 200);
     peopleUpdating = setInterval(lookForPeople, populationPerTick - (recruiters.count * 10000));
@@ -270,7 +277,14 @@ function checkMusic() {
 
 function PlayNewAudio() {
     embeddedAudio.src = audioSrcs[getRndInt(0, audioSrcs.length - 1)];
-    embeddedAudio.play();
+    let promise = embeddedAudio.play();
+    if (promise !== undefined) {
+        promise.then(_ => {
+          console.log("Autoplay started");
+        }).catch(error => {
+          console.log("Autoplay prevented");
+        });
+      }
 }
 
 function updatePopulationValues() {
@@ -287,7 +301,7 @@ function lookForPeople() {
         localStorage.setItem("Population", population);
         sayings.push("You have gained a new person.");
         if (maxPopulation == 1 && workingPopulation == 0)
-            sayings.push("Try assigning your resident as a lumberjack.");
+            sayings.unshift("Try assigning your resident as a lumberjack.");
     }
     else if (maxPopulation == population) {
         sayings.push("A stranger passes through your town looking for housing");
@@ -391,7 +405,7 @@ function buildStructure(e) {
     stone.spend(e.resourceNeeded[1]);
     ore.spend(e.resourceNeeded[2]);
     e.build();
-    sayings.push("You build a " + e.name + ".")
+    sayings.push("You build a " + e.name.toLowerCase() + ".")
 }
 
 let upgradeClicked = (e) => {
@@ -471,7 +485,7 @@ function upgradeTool(e) {
         stone.spend(e.resourceNeeded[1]);
         ore.spend(e.resourceNeeded[2]);
         e.upgrade();
-        sayings.push("You upgrade your " + e.name + "s.")
+        sayings.push("You upgrade your " + e.name.toLowerCase() + "s.")
     }
 }
 
@@ -637,7 +651,8 @@ function gatherResources() {
 function feedPeople() {
     if (meat.amount <= 0 && population > 0) {
         population--;
-        sayings.push("You have lost a person you could not feed.");
+        if(time.hours > 5)
+            sayings.push("You have lost a person you could not feed.");
         meat.amount = 0;
     }
     //meat = -population + 5(hunters.count * (spears.count/5 + 1))
@@ -765,23 +780,29 @@ let randomWeather = ["Looks like its going to be a rainy day today.", "What a wo
 
 let weatherReport = false;
 let noticeOccored = false;
+let currentDay = 0;
 
 function generateRandomNotices() {
     if (time.hours > 7  && time.hours < 8 && !weatherReport) {
         weatherReport = true;
-        sayings.push(randomWeather[getRndInt(0, randomWeather.length - 1)]);
+        sayings.unshift(randomWeather[getRndInt(0, randomWeather.length - 1)]);
     }
     else if(time.hours > 8)
         weatherReport = false;
 
     if (population > 10) {
         if (time.hours > 11 && time.hours < 12 && Math.random > 0.98 && noticeOccored) {
-            sayings.push(randomNotices[getRndInt(0, randomNotices.length - 1)]);
+            sayings.unshift(randomNotices[getRndInt(0, randomNotices.length - 1)]);
             noticeOccored = true;
         }
         else if( time.hours > 12)
         {
             noticeOccored = false;
         }
+    }
+    if(currentDay < Math.trunc(time.days))
+    {
+        currentDay = Math.trunc(time.days);
+        sayings.push("Day " + currentDay);
     }
 }

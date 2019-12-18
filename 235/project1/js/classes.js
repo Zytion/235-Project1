@@ -22,9 +22,9 @@ class Resources {
 class Time {
     constructor(ticks = 0) {
         this.ticks = ticks;
-        let minutes = 0;
-        let hours = 0;
-        let days = 0;
+        this.minutes = ((this.ticks / 2) % (60));
+        this.hours = ((this.ticks / 2) / 60) % 24;
+        this.days = ((this.ticks / 2) / (60 * 24));
     }
 
     //updates ticks, days, hours, and minutes
