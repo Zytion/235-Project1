@@ -3,7 +3,8 @@
     color: black;
 }
 #game {
-    width: 800px;
+    min-width: 800px;
+    width: 850px;
     height: 500px;
     margin: 1em;
     background-color: #e3cd8c;
@@ -15,7 +16,7 @@
 }
 
 #game > * {
-    width: 90%;
+    width: 92%;
     background-color: #fce5cdff;
     border: 3px solid black;
     display: flex;
@@ -72,6 +73,10 @@
     height: 280px;
 }
 
+div.ready {
+    background-color: #faca96;
+}
+
 h2 {
     background-color: transparent;
     margin: 0;
@@ -96,27 +101,33 @@ h3 {
     flex-flow: column nowrap;
 }
 
-button {
-    width: 100%;
+button, .buildButton, .upgradeButton {
     height: 100%;
     text-align: start;
     background-color: #ebd8c4ff;
     border: 1px solid black;
+    padding: 0 8px;
 }
 
-button:hover {
+button:hover, .buildButton:hover, .upgradeButton:hover {
     background-color: #dbcab8;
 }
 
-button:active {
+button:active, .buildButton:active, .upgradeButton:active {
     background-color: #cfc0b0;
 }
 
 button:disabled {
     background-color: #f8eadc;
 }
-
-button > div {
+div.counter {
+    margin: 0;
+    position: absolute;    
+    right: 10px;
+    bottom: 0;
+    font-size: 25px !important;
+  }
+button > div, .buildButton div, .upgradeButton div{
     font-size: 10px;
 }
 
@@ -143,6 +154,13 @@ button > div {
 
 #meatButton:active img {
     transform: scale(0.9, 0.9);
+}
+
+#mute {
+    width: max-content;
+    margin: auto;
+    height: max-content;
+    text-align: center;
 }
 
 /* Tooltip container */
@@ -209,15 +227,7 @@ button > div {
   #notices {
     margin: 0 0 0 5%;
     padding: 0;
-    width: 100% 95%;
+    width: 95%;
     overflow-x: hidden; /* Hide horizontal scrollbar */
     overflow-y: auto; /* Add vertical scrollbar */
-  }
-
-  .counter {
-    margin: 0;
-    position: absolute;    
-    right: 10px;
-    bottom: 0;
-    font-size: 25px;
   }

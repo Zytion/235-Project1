@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/project1.css">
     <link rel="stylesheet" href="css/project3.css">
-    <title>Project</title>
+    <title>Meat Clicker</title>
 </head>
 
 <body>
@@ -87,6 +87,7 @@
             <div id="Time">
                 <h4>Date: 69</h4>
                 <h4>Time: 04:20</h4>
+                <button id="mute" onclick="mute()"><i class="fa fa-volume-up" aria-hidden="true"></i></button>
             </div>
 
             <div id="Meat">
@@ -101,61 +102,61 @@
             <div id="Build">
                 <h2>Build</h2>
                 <div class="internalBox">
-                    <div class="tooltip"><button class="buildButton" data-build="house">House <div>1000 Wood</div>
+                    <div class="tooltip"><div class="buildButton" data-build="house">House <div>1000 Wood</div>
                             <div class="counter">0</div>
-                        </button> <span class="tooltiptext2">Houses increase the number of people in your village</span>
+                        </div> <span class="tooltiptext2">Houses increase the number of people in your village</span>
                     </div>
-                    <div class="tooltip"><button class="buildButton" data-build="mine">Mineshaft <div>1000 Wood</div>
+                    <div class="tooltip"><div class="buildButton" data-build="mine">Mineshaft <div>1000 Wood</div>
                             <div class="counter">0</div>
-                        </button><span class="tooltiptext2">Increases the number of miners you can have</span></div>
-                    <div class="tooltip"><button class="buildButton" data-build="lumberyard">Lumberyard <div>1000 Wood
+                        </div><span class="tooltiptext2">Increases the number of miners you can have</span></div>
+                    <div class="tooltip"><div class="buildButton" data-build="lumberyard">Lumberyard <div>1000 Wood
                             </div>
                             <div class="counter">0</div>
-                        </button><span class="tooltiptext2">Increases the number of lumberjacks you can have</span></div>
-                    <div class="tooltip"><button class="buildButton" data-build="lodge">Hunting Lodge <div>1000 Wood
+                        </div><span class="tooltiptext2">Increases the number of lumberjacks you can have</span></div>
+                    <div class="tooltip"><div class="buildButton" data-build="lodge">Hunting Lodge <div>1000 Wood
                             </div>
                             <div class="counter">0</div>
-                        </button><span class="tooltiptext2">Increases the number of hunters you can have</span></div>
+                        </div><span class="tooltiptext2">Increases the number of hunters you can have</span></div>
                 </div>
             </div>
             <div id="Upgrade">
                 <h2>Upgrade</h2>
                 <div class="internalBox">
-                    <div class="tooltip"><button class="upgradeButton" data-upgrade="hunter">Hunter <div>1000 Wood</div>
+                    <div class="tooltip"><div class="upgradeButton" data-upgrade="hunter">Hunter <div>1000 Wood</div>
                             <div class="counter">0</div>
-                        </button><span class="tooltiptext2">Increases the amount of meat you get per click</span></div>
-                    <div class="tooltip"><button class="upgradeButton" data-upgrade="recruiter">Recruiter <div>1000 Wood
+                        </div><span class="tooltiptext2">Increases the amount of meat you get per click</span></div>
+                    <div class="tooltip"><div class="upgradeButton" data-upgrade="recruiter">Recruiter <div>1000 Wood
                             </div>
                             <div class="counter">0</div>
-                        </button><span class="tooltiptext2">Increases the rate at which people arrive at your
+                        </div><span class="tooltiptext2">Increases the rate at which people arrive at your
                             village</span></div>
-                    <div class="tooltip"><button class="upgradeButton" data-upgrade="townmaster">Townmaster <div>1000
+                    <div class="tooltip"><div class="upgradeButton" data-upgrade="townmaster">Townmaster <div>1000
                                 Wood</div>
                             <div class="counter">0</div>
-                        </button><span class="tooltiptext2">Increases the number of people per
+                        </div><span class="tooltiptext2">Increases the number of people per
                             building (not just houses)</span></div>
-                    <div class="tooltip"><button class="upgradeButton" data-upgrade="pickaxe">Pickaxe <div>1000 Wood
+                    <div class="tooltip"><div class="upgradeButton" data-upgrade="pickaxe">Pickaxe <div>1000 Wood
                             </div>
                             <div class="counter">0</div>
-                        </button><span class="tooltiptext2">Improves the effecency of miners</span></div>
-                    <div class="tooltip"><button class="upgradeButton" data-upgrade="hatchet">Hatchets <div>1000 Wood
+                        </div><span class="tooltiptext2">Improves the effecency of miners</span></div>
+                    <div class="tooltip"><div class="upgradeButton" data-upgrade="hatchet">Hatchets <div>1000 Wood
                             </div>
                             <div class="counter">0</div>
-                        </button><span class="tooltiptext2">Improves the effecency of lumberjacks</span></div>
-                    <div class="tooltip"><button class="upgradeButton" data-upgrade="spear">Spears <div>1000 Wood</div>
+                        </div><span class="tooltiptext2">Improves the effecency of lumberjacks</span></div>
+                    <div class="tooltip"><div class="upgradeButton" data-upgrade="spear">Spears <div>1000 Wood</div>
                             <div class="counter">0</div>
-                        </button><span class="tooltiptext2">Improves the effecenecy of hunters</span></div>
+                        </div><span class="tooltiptext2">Improves the effecenecy of hunters</span></div>
                 </div>
             </div>
         </main>
-    </div>
+        <audio src="music/Ragni.mp3"></audio>
+        </div>
 
     <!-- External libraries -->
     <!-- https://github.com/pixijs/pixi.js?utm_source=html5weekly -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.6.0/pixi.min.js"></script>
     <!--  https://github.com/goldfire/howler.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.5/howler.js"></script>
-
 
     <!-- My JS files -->
     <!-- <script src="js/utility.js"></script> -->
