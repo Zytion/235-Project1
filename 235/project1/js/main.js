@@ -6,7 +6,6 @@ let ore;
 //population
 let maxPopulation = 1;
 let population = 1;
-localStorage.setItem("Population", population);
 let populationPerTick = 60000;
 let peopleUpdating;
 
@@ -41,25 +40,30 @@ let upgradeButtons;
 let jobUpButtons;
 let jobDownButtons;
 
-let tickManager = 0.05;
+let tickManager = 0.02;
 
 //let hasMedicine = false;
 let eventTimer = 200000 + getRndInt(0, 70000);
 
 let previousDay = 0;
 
+let embeddedAudio;
+let audioSrcs = ["music/Detlas Suburbs.mp3", "music/Detlas.mp3", "music/Elkurn.mp3",
+    "music/Maltic.mp3", "music/Nemract.mp3", "music/Nivla Woods.mp3", "music/Ragni.mp3"];
+
 window.onload = () => {
     buildButtons = document.querySelectorAll(".buildButton");
     upgradeButtons = document.querySelectorAll(".upgradeButton");
     jobUpButtons = document.querySelectorAll(".upArrow");
     jobDownButtons = document.querySelectorAll(".downArrow");
+    embeddedAudio = document.querySelector("audio");
+
     gameSetUp();
 }
-
 //set up game
 function gameSetUp() {
     //if the localStorage of meat is null, set up game
-    if (localStorage.getItem("Meat") == null) {
+    if (localStorage.getItem("Hunter") == null) {
         //#region Resources
         meat = new Resources("Meat", 0, 0);
         wood = new Resources("Wood", 0, 0);
@@ -72,10 +76,10 @@ function gameSetUp() {
 
         //#region Buildings
         //resources in order is wood, stone, ore
-        houses = new Structure("House", [10, 0, 0], 0, 4, 0);
-        mineshafts = new Structure("Mineshaft", [30, 0, 0]);
-        lumberyards = new Structure("Lumberyard", [30, 15, 5]);
-        lodges = new Structure("Lodge", [30, 0, 15]);
+        houses = new Structure("House", [10, 0, 0], [2, 0, 0], 0, 4, 0);
+        mineshafts = new Structure("Mineshaft", [10, 0, 0], [1.75, 2, 1.75]);
+        lumberyards = new Structure("Lumberyard", [10, 0, 0], [1.9, 2, 1.75]);
+        lodges = new Structure("Lodge", [10, 10, 0], [1.8, 1.75, 2]);
         //#endregion
 
         //#region Population
@@ -85,13 +89,15 @@ function gameSetUp() {
         //#endregion
 
         //#region Upgrades
-        hunterUpgrades = new Upgrade("HunterUpgrade", [50, 50, 50])
-        recruiters = new Upgrade("Recruiter", [30, 50, 30]);
-        townmasters = new Upgrade("Townmaster", [30, 50, 30]);
-        pickaxes = new Upgrade("Pickaxe", [30, 50, 30]);
-        hatchets = new Upgrade("Hatchet", [30, 50, 30]);
-        spears = new Upgrade("Spear", [25, 10, 5]);
+        hunterUpgrades = new Upgrade("HunterUpgrade", [15, 15, 10])
+        recruiters = new Upgrade("Recruiter", [20, 20, 10]);
+        townmasters = new Upgrade("Townmaster", [20, 20, 10]);
+        pickaxes = new Upgrade("Pickaxe", [15, 20, 5]);
+        hatchets = new Upgrade("Hatchet", [15, 20, 5]);
+        spears = new Upgrade("Spear", [20, 15, 5]);
         //#endregion
+
+        localStorage.setItem("Muted", false);
     }
     //if there is meat in the local storage, set up the game if it has any values
     else {
@@ -112,13 +118,13 @@ function gameSetUp() {
 
         //#region Buildings
         let houseStorage = JSON.parse(localStorage.getItem("House"));
-        houses = new Structure("House", houseStorage.resourceNeeded, houseStorage.count, 4, 0);
+        houses = new Structure("House", houseStorage.resourceNeeded, houseStorage.resourceUpgradeRates, houseStorage.count, 4, 0);
         let mineshaftStorage = JSON.parse(localStorage.getItem("Mineshaft"));
-        mineshafts = new Structure("Mineshaft", mineshaftStorage.resourceNeeded, mineshaftStorage.count);
+        mineshafts = new Structure("Mineshaft", mineshaftStorage.resourceNeeded, mineshaftStorage.resourceUpgradeRates, mineshaftStorage.count);
         let lumberyardStorage = JSON.parse(localStorage.getItem("Lumberyard"));
-        lumberyards = new Structure("Lumberyard", lumberyardStorage.resourceNeeded, lumberyardStorage.count);
+        lumberyards = new Structure("Lumberyard", lumberyardStorage.resourceNeeded, lumberyardStorage.resourceUpgradeRates, lumberyardStorage.count);
         let lodgeStorage = JSON.parse(localStorage.getItem("Lodge"));
-        lodges = new Structure("Lodge", lodgeStorage.resourceNeeded, lodgeStorage.count);
+        lodges = new Structure("Lodge", lodgeStorage.resourceNeeded, lodgeStorage.resourceUpgradeRates, lodgeStorage.count);
         //#endregion
 
         //#region Population
@@ -130,23 +136,32 @@ function gameSetUp() {
         lumberjacks = new Population("Lumberjack", lumberjackStorage.count);
 
         let populationStorage = JSON.parse(localStorage.getItem("Population"));
-        population = populationStorage;
+        if (populationStorage != null)
+            population = populationStorage;
+        else
+            population = 0;
         //#endregion
 
         //#region Upgrades
         let hunterUpgradeStorage = JSON.parse(localStorage.getItem("HunterUpgrade"));
-        hunterUpgrades = new Upgrade("HunterUpgrade", hunterUpgradeStorage.resourceNeeded, hunterUpgradeStorage.count);
+        hunterUpgrades = new Upgrade("HunterUpgrade", hunterUpgradeStorage.resourceNeeded, hunterUpgradeStorage.resourceUpgradeRates, hunterUpgradeStorage.count);
         let recruiterStorage = JSON.parse(localStorage.getItem("Recruiter"));
-        recruiters = new Upgrade("Recruiter", recruiterStorage.resourceNeeded, recruiterStorage.count);
+        recruiters = new Upgrade("Recruiter", recruiterStorage.resourceNeeded, recruiterStorage.resourceUpgradeRates, recruiterStorage.count);
         let townmasterStorage = JSON.parse(localStorage.getItem("Townmaster"));
-        townmasters = new Upgrade("Townmaster", townmasterStorage.resourceNeeded, townmasterStorage.count);
+        townmasters = new Upgrade("Townmaster", townmasterStorage.resourceNeeded, townmasterStorage.resourceUpgradeRates, townmasterStorage.count);
         let pickaxeStorage = JSON.parse(localStorage.getItem("Pickaxe"));
-        pickaxes = new Upgrade("Pickaxe", pickaxeStorage.resourceNeeded, pickaxeStorage.count);
+        pickaxes = new Upgrade("Pickaxe", pickaxeStorage.resourceNeeded, pickaxeStorage.resourceUpgradeRates, pickaxeStorage.count);
         let hatchetStorage = JSON.parse(localStorage.getItem("Hatchet"));
-        hatchets = new Upgrade("Hatchet", hatchetStorage.resourceNeeded, hatchetStorage.count);
+        hatchets = new Upgrade("Hatchet", hatchetStorage.resourceNeeded, hatchetStorage.resourceUpgradeRates, hatchetStorage.count);
         let spearStorage = JSON.parse(localStorage.getItem("Spear"));
-        spears = new Upgrade("Spear", spearStorage.resourceNeeded, spearStorage.count);
+        spears = new Upgrade("Spear", spearStorage.resourceNeeded, spearStorage.resourceUpgradeRates, spearStorage.count);
         //#endregion
+
+        let muteStorage = JSON.parse(localStorage.getItem("Muted"));
+        if (muteStorage) {
+            embeddedAudio.src = audioSrcs[getRndInt(0, audioSrcs.length - 1)];
+            mute();
+        }
     }
 
     //p = 5(houses + 2 * townmaster) + (mineshaft + lodges + lumberyards)(townmater / 5) + 1
@@ -240,7 +255,22 @@ function gameLoop() {
     //Update labels
     updateLabels();
     //generate notifications
+    generateRandomNotices();
+
     updateNotifications();
+
+    checkMusic();
+}
+
+function checkMusic() {
+    if (document.querySelector("#mute").querySelector("i").className == "fa fa-volume-up" &&
+        (embeddedAudio.paused || embeddedAudio.currentTime >= embeddedAudio.duration))
+        PlayNewAudio();
+}
+
+function PlayNewAudio() {
+    embeddedAudio.src = audioSrcs[getRndInt(0, audioSrcs.length - 1)];
+    embeddedAudio.play();
 }
 
 function updatePopulationValues() {
@@ -256,26 +286,29 @@ function lookForPeople() {
         population++;
         localStorage.setItem("Population", population);
         sayings.push("You have gained a new person.");
+        if (maxPopulation == 1 && workingPopulation == 0)
+            sayings.push("Try assigning your resident as a lumberjack.");
     }
-    if(maxPopulation < population)
-    {
+    else if (maxPopulation == population) {
+        sayings.push("A stranger passes through your town looking for housing");
+    }
+    if (maxPopulation < population) {
         population--;
         sayings.push("A person has left because they do not have housing!");
     }
-
     localStorage.setItem("Population", JSON.stringify(population));
 }
 
 function GetResources(e) {
     let str = "";
     if (e.resourceNeeded[0] > 0) {
-        str += "Wood: " + e.resourceNeeded[0];
+        str += "Wood: " + Math.round(e.resourceNeeded[0]);
     }
     if (e.resourceNeeded[1] > 0) {
-        str += ", Stone: " + e.resourceNeeded[1];
+        str += ", Stone: " + Math.round(e.resourceNeeded[1]);
     }
     if (e.resourceNeeded[2] > 0) {
-        str += ", Ore: " + e.resourceNeeded[2];
+        str += ", Ore: " + Math.round(e.resourceNeeded[2]);
     }
     return str;
 }
@@ -286,7 +319,9 @@ function clickMeat(e) {
 
 function updateNotifications() {
     let notificationList = document.querySelector("#notices");
-    let str = "Day " + Math.trunc(time.days);
+    let str = Math.trunc(time.hours) + ":" + Math.trunc(Math.trunc(time.minutes / 10) * 10);
+    if (Math.trunc(Math.trunc(time.minutes / 10) * 10 == 0))
+        str += "0";
 
     while (sayings.length > 0) {
         let li = document.createElement("li");
@@ -413,26 +448,31 @@ let upgradeClicked = (e) => {
 }
 
 function upgradeTool(e) {
-    if (e.resourceNeeded[0] > wood.amount) {
-        //NO BUILD
-        alert("You do not have enough wood.");
-        return;
+    if (e.notActive) {
+        alert("You have reached maximum upgrades.")
     }
-    if (e.resourceNeeded[1] > stone.amount) {
-        //NO BUILD
-        alert("You do not have enough stone.");
-        return;
+    else {
+        if (e.resourceNeeded[0] > wood.amount) {
+            //NO BUILD
+            alert("You do not have enough wood.");
+            return;
+        }
+        if (e.resourceNeeded[1] > stone.amount) {
+            //NO BUILD
+            alert("You do not have enough stone.");
+            return;
+        }
+        if (e.resourceNeeded[2] > ore.amount) {
+            //NO BUILD
+            alert("You do not have enough ore.");
+            return;
+        }
+        wood.spend(e.resourceNeeded[0]);
+        stone.spend(e.resourceNeeded[1]);
+        ore.spend(e.resourceNeeded[2]);
+        e.upgrade();
+        sayings.push("You upgrade your " + e.name + "s.")
     }
-    if (e.resourceNeeded[2] > ore.amount) {
-        //NO BUILD
-        alert("You do not have enough ore.");
-        return;
-    }
-    wood.spend(e.resourceNeeded[0]);
-    stone.spend(e.resourceNeeded[1]);
-    ore.spend(e.resourceNeeded[2]);
-    e.upgrade();
-    sayings.push("You upgrade your " + e.name + "s.")
 }
 
 function updateLabels() {
@@ -467,6 +507,62 @@ function updateLabels() {
     popValues[1].innerHTML = miners.count + "/" + (mineshafts.count * mineshafts.jobs + 1);
     popValues[2].innerHTML = lumberjacks.count + "/" + (lumberyards.count * lumberyards.jobs + 1);
 
+    //#region build buttons update
+    if (houses.resourceNeeded[0] <= wood.amount && houses.resourceNeeded[1] <= stone.amount && houses.resourceNeeded[2] <= ore.amount)
+        buildButtons[0].className = "buildButton ready";
+    else
+        buildButtons[0].className = "buildButton";
+
+    if (mineshafts.resourceNeeded[0] <= wood.amount && mineshafts.resourceNeeded[1] <= stone.amount && mineshafts.resourceNeeded[2] <= ore.amount)
+        buildButtons[1].className = "buildButton ready";
+    else
+        buildButtons[1].className = "buildButton";
+
+    if (lumberyards.resourceNeeded[0] <= wood.amount && lumberyards.resourceNeeded[1] <= stone.amount && lumberyards.resourceNeeded[2] <= ore.amount)
+        buildButtons[2].className = "buildButton ready";
+    else
+        buildButtons[2].className = "buildButton";
+
+
+    if (lodges.resourceNeeded[0] <= wood.amount && lodges.resourceNeeded[1] <= stone.amount && lodges.resourceNeeded[2] <= ore.amount)
+        buildButtons[3].className = "buildButton ready";
+    else
+        buildButtons[3].className = "buildButton";
+    //#endregion
+
+    //#region  upgrade buttons update
+    if (!hunterUpgrades.notActive && hunterUpgrades.resourceNeeded[0] <= wood.amount && hunterUpgrades.resourceNeeded[1] <= stone.amount && hunterUpgrades.resourceNeeded[2] <= ore.amount)
+        upgradeButtons[0].className = "upgradeButton ready";
+    else
+        upgradeButtons[0].className = "upgradeButton";
+
+    if (!recruiters.notActive && recruiters.resourceNeeded[0] <= wood.amount && recruiters.resourceNeeded[1] <= stone.amount && recruiters.resourceNeeded[2] <= ore.amount)
+        upgradeButtons[1].className = "upgradeButton ready";
+    else
+        upgradeButtons[1].className = "upgradeButton";
+
+    if (!townmasters.notActive && townmasters.resourceNeeded[0] <= wood.amount && townmasters.resourceNeeded[1] <= stone.amount && townmasters.resourceNeeded[2] <= ore.amount)
+        upgradeButtons[2].className = "upgradeButton ready";
+    else
+        upgradeButtons[2].className = "upgradeButton";
+
+    if (!pickaxes.notActive && pickaxes.resourceNeeded[0] <= wood.amount && pickaxes.resourceNeeded[1] <= stone.amount && pickaxes.resourceNeeded[2] <= ore.amount)
+        upgradeButtons[3].className = "upgradeButton ready";
+    else
+        upgradeButtons[3].className = "upgradeButton";
+
+    if (!hatchets.notActive && hatchets.resourceNeeded[0] <= wood.amount && hatchets.resourceNeeded[1] <= stone.amount && hatchets.resourceNeeded[2] <= ore.amount)
+        upgradeButtons[4].className = "upgradeButton ready";
+    else
+        upgradeButtons[4].className = "upgradeButton";
+
+    if (!spears.notActive && spears.resourceNeeded[0] <= wood.amount && spears.resourceNeeded[1] <= stone.amount && spears.resourceNeeded[2] <= ore.amount)
+        upgradeButtons[5].className = "upgradeButton ready";
+    else
+        upgradeButtons[5].className = "upgradeButton";
+
+    //#endregion
+
     updatePopControls();
 }
 
@@ -497,7 +593,7 @@ function changeJobs(e) {
 function updatePopControls() {
     let upArrows = document.querySelectorAll(".upArrow");
     let downArrows = document.querySelectorAll(".downArrow");
-    
+
     if (population <= workingPopulation) {
         for (let arrow of upArrows) {
             arrow.disabled = true;
@@ -508,7 +604,7 @@ function updatePopControls() {
             arrow.disabled = false;
         }
     }
-    
+
     if (hunters.count >= lodges.count * lodges.jobs + 1)
         upArrows[0].disabled = true;
     if (miners.count >= mineshafts.count * mineshafts.jobs + 1)
@@ -532,10 +628,10 @@ function updatePopControls() {
 
 function gatherResources() {
     //meat = -population + 5(hunters.count * (spears.count/5 + 1))
-    meat.resourcesPerTick += tickManager * 5 * (hunters.count * (spears.count / 5));
-    wood.resourcesPerTick = tickManager * (lumberjacks.count * (hatchets.count / 5));
-    stone.resourcesPerTick = tickManager * (miners.count * (pickaxes.count / 5) * 0.5);
-    ore.resourcesPerTick = tickManager * (miners.count + (pickaxes.count / 2)) * 0.3;
+    meat.resourcesPerTick += tickManager * 5 * (hunters.count * (spears.count / 5 + 1));
+    wood.resourcesPerTick = tickManager * 4 / 5 * (lumberjacks.count * (hatchets.count / 5 + 1));
+    stone.resourcesPerTick = tickManager / 2 * (miners.count * (pickaxes.count / 5 + 1));
+    ore.resourcesPerTick = tickManager / 3 * (miners.count + (pickaxes.count / 2));
 }
 
 function feedPeople() {
@@ -543,7 +639,7 @@ function feedPeople() {
         population--;
         sayings.push("You have lost a person you could not feed.");
         meat.amount = 0;
-    }   
+    }
     //meat = -population + 5(hunters.count * (spears.count/5 + 1))
     meat.resourcesPerTick = tickManager * -population;
     if (workingPopulation > population) {
@@ -569,7 +665,7 @@ function badEvent() {
         meat.amount /= 2;
         wood.amount /= 4;
     }
-    else if (rand == 3) {
+    else if (rand == 3 && population > 10) {
         sayings.push("A disease has infected your village.");
         /* 
         if (hasMedicine) {
@@ -586,15 +682,19 @@ function badEvent() {
     else if (rand == 4) {
         let randomStone = getRndInt(1, stone.amount / 5);
         let randomOre = getRndInt(1, ore.count / 10);
-        sayings.push("Someone stole supplies from the supply house!");
-        sayings.push("You have lost some stone and ore.");
-        stone.amount -= randomStone;        
-        ore.amount -= randomOre;
+        if (randomOre > 0 && randomStone > 0) {
+            sayings.push("Someone stole supplies from the supply house!");
+            sayings.push("You have lost some stone and ore.");
+            stone.amount -= randomStone;
+            ore.amount -= randomOre;
+        }
     }
     else {
         let randomPopulation = getRndInt(1, population / 8);
-        sayings.push(randomPopulation + " people are unhappy with your rule. They have left.");
-        population -= randomPopulation;
+        if (randomPopulation > 0) {
+            sayings.push(randomPopulation + " people are unhappy with your rule. They have left.");
+            population -= randomPopulation;
+        }
     }
 }
 
@@ -612,12 +712,12 @@ function goodEvent() {
         sayings.push("A trader has come to your village and has given you some ore.");
         ore.amount += (ore.amount) / 12;
     }
-    else if (rand == 2) {
+    else if (rand == 2 && miners.count > 0) {
         sayings.push("Your miners found a great vein of ore!")
         ore.amount += ore.amount / 10;
         stone.amount += stone.amount / 10;
     }
-    else if (rand == 3) {
+    else if (rand == 3 && lumberjacks.count > 0) {
         sayings.push("Your lumberjacks were inspired to work extra hard today. They have returned with a ton of wood.");
         wood.amount += wood.resourcesPerTick * 100;
     }
@@ -634,6 +734,54 @@ function newEvent() {
 }
 
 function getRndInt(min, max) {
-    return Math.floor(Math.random() * (max - min) ) + min;
+    return Math.floor(Math.random() * (max - min)) + min;
 }
-  
+
+function mute() {
+    let muteButton = document.querySelector("#mute").querySelector("i");
+    if (muteButton.className == "fa fa-volume-up") {
+        muteButton.className = "fa fa-volume-off";
+        embeddedAudio.pause();
+        localStorage.setItem("Muted", true);
+    }
+    else {
+        muteButton.className = "fa fa-volume-up";
+        embeddedAudio.play();
+        localStorage.setItem("Muted", false);
+    }
+}
+
+let randomNotices = ["Your villagers decided to have a feast to celebreate a brithday.",
+    "A villager spots a group of houses in the distance... Neat.", 
+    " Timmy's fallen down a well? What good news, this will give him ample opportunity to explore his interest in geology.",
+    "Gossip is spreading through the village, looks like a marriage will be occoring soon.",
+    "A strange man appears in your village trying to sell a rim that he says 'Just Works'. You ask him to leave.",
+    "The village is bussiling with activity today, looks like things are going well.",
+    "People greet you as you walk by.", "Your villagers seem to be doing well today."];
+
+let randomWeather = ["Looks like its going to be a rainy day today.", "What a wonderfully sunny day!", "It is nice and breezy today.",
+    "Cloudy and cool. What a wonderful day for work!", "Its a bit cilly out today.", "Nice and warm outside today.", 
+    "Another day, another step."];
+
+let weatherReport = false;
+let noticeOccored = false;
+
+function generateRandomNotices() {
+    if (time.hours > 7  && time.hours < 8 && !weatherReport) {
+        weatherReport = true;
+        sayings.push(randomWeather[getRndInt(0, randomWeather.length - 1)]);
+    }
+    else if(time.hours > 8)
+        weatherReport = false;
+
+    if (population > 10) {
+        if (time.hours > 11 && time.hours < 12 && Math.random > 0.98 && noticeOccored) {
+            sayings.push(randomNotices[getRndInt(0, randomNotices.length - 1)]);
+            noticeOccored = true;
+        }
+        else if( time.hours > 12)
+        {
+            noticeOccored = false;
+        }
+    }
+}
