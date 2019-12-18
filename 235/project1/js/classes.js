@@ -41,9 +41,10 @@ class Time {
 }
 
 class Structure {
-    constructor(name, resourceNeeded, count = 0, housing = 1, jobs = 4) {
+    constructor(name, resourceNeeded, upgradeRates, count = 0, housing = 1, jobs = 4) {
         this.name = name;
         this.resourceNeeded = resourceNeeded;
+        this.resourceUpgradeRates = upgradeRates;
         this.count = count;
         this.housing = housing;
         this.jobs = jobs;
@@ -53,16 +54,24 @@ class Structure {
     build() {
         this.count++;
         for (let i = 0; i < this.resourceNeeded.length; i++) {
-            this.resourceNeeded[i] *= 2;
+            this.resourceNeeded[i] *= this.resourceUpgradeRates[i];
+        }
+        if(this.name != "House")
+        {
+            if(this.resourceNeeded[1] == 0)
+                this.resourceNeeded[1] = 10;
+            if((this.count == 1  && this.name != "Lumberyard") || (this.count == 2 && this.name == "Lumberyard"))
+                this.resourceNeeded[2] = 5;
         }
         localStorage.setItem(this.name, JSON.stringify(this));
     }
 }
 
 class Upgrade {
-    constructor(name, resourceNeeded, count = 0, totalUpgrades = 5) {
+    constructor(name, resourceNeeded, updateRates = [5,5,5], count = 0, totalUpgrades = 5) {
         this.name = name;
         this.resourceNeeded = resourceNeeded;
+        this.resourceUpgradeRates = updateRates;
         this.totalUpgrades = totalUpgrades;
         this.count = count;
         let notActive = false;
@@ -73,7 +82,7 @@ class Upgrade {
         if (this.count < this.totalUpgrades) {
             this.count++;
             for (let i = 0; i < this.resourceNeeded.length; i++) {
-                this.resourceNeeded[i] *= 2;
+                this.resourceNeeded[i] *= this.resourceUpgradeRates[i];
             }
         }
         else {
